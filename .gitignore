@@ -31,6 +31,7 @@ pnpm-debug.log*
 # IDE
 .vscode/
 .idea/
+.omo/
 *.swp
 *.swo
 *~
@@ -58,4 +59,3 @@ worker-do/
 worker-r2/
 
 .cursor/
-*.md
