@@ -11,6 +11,7 @@ import { LogIn } from "lucide-react";
 import HomePage from "./components/HomePage";
 import AdminPage from "./components/admin/AdminPage";
 import AuthVerify from "./pages/AuthVerify";
+import AuthSSO from "./pages/AuthSSO";
 import FeatureDetail from "./pages/FeatureDetail";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import LoginModal from "./components/auth/LoginModal";
@@ -64,6 +65,7 @@ function AppContent() {
           <Route path="/feature/:id" element={<FeatureDetail />} />
           <Route path="/admin/*" element={<AdminPage />} />
           <Route path="/auth/verify" element={<AuthVerify />} />
+          <Route path="/auth/sso" element={<AuthSSO />} />
         </Routes>
       </main>
 

@@ -203,6 +203,53 @@ Secret environment variables (set with `wrangler secret put`):
 - `RESEND_API_KEY`: API key for Resend email service (optional, for user notifications)
 - `SENDGRID_API_KEY`: API key for SendGrid email service (optional, alternative to Resend)
 - `TURNSTILE_SECRET_KEY`: Secret key for Cloudflare Turnstile (optional, anti-spam)
+- `SSO_SECRET`: HMAC secret for SSO auto-login links (optional; SSO endpoint is disabled if unset)
+
+## SSO Auto-Login
+
+Users from your other applications can be logged in automatically when they open a signed feedback link. No email or reCAPTCHA is needed — the link itself is the credential.
+
+### Link format
+
+```
+{APP_URL}/auth/sso?userId=<externalUserId>&expires=<epoch-ms>&sig=<hex-hmac>
+```
+
+| Param | Description |
+|-------|-------------|
+| `userId` | The user's ID in your external application (`[A-Za-z0-9_.-]`, max 128 chars) |
+| `expires` | Link expiry, epoch **milliseconds**. Must be in the future and no more than 10 minutes ahead (generate `now + 5 min`) |
+| `sig` | Lowercase hex of `HMAC-SHA256("{userId}.{expires}", SSO_SECRET)` |
+
+On the first visit, a user with synthetic email `sso-{userId}@sso.local` is created; subsequent visits reuse the same account. Links expire in 5 minutes and cannot be forged without the secret.
+
+### Generating the link (in your other apps)
+
+Node.js example:
+
+```js
+import crypto from "node:crypto";
+
+function buildSSOLink(baseUrl, userId, secret) {
+  const expires = Date.now() + 5 * 60 * 1000; // 5 minutes, in ms
+  const sig = crypto
+    .createHmac("sha256", secret)
+    .update(`${userId}.${expires}`)
+    .digest("hex"); // lowercase hex
+  const params = new URLSearchParams({ userId, expires: String(expires), sig });
+  return `${baseUrl}/auth/sso?${params.toString()}`;
+}
+```
+
+### Configuration
+
+Set the `SSO_SECRET` secret (the same value must be used by the apps generating links):
+
+```bash
+npx wrangler secret put SSO_SECRET
+```
+
+If `SSO_SECRET` is not set, the SSO endpoint is disabled (returns 503) — it never degrades to unsigned logins.
 
 ## Deployment
 

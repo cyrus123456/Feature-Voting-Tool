@@ -24,6 +24,7 @@ RECAPTCHA_SITE_KEY = ""
 # TELEGRAM_CHAT_ID - Telegram chat ID for notifications
 # RESEND_API_KEY - Resend email service API key
 # RECAPTCHA_SECRET_KEY - Google reCAPTCHA v3 secret key
+# SSO_SECRET - HMAC secret for SSO auto-login links (/auth/sso)
 
 [build]
 command = "npm install && npx tsc"

@@ -248,7 +248,139 @@ export async function handleLogout(request: Request, env: Env): Promise<Response
   }
 }
 
+/**
+ * SSO auto-login with signed link from external apps
+ * GET /api/auth/sso?userId=xxx&expires=xxx&sig=xxx
+ * sig = hex(HMAC-SHA256(`${userId}.${expires}`, SSO_SECRET))
+ * Maps external userId to a synthetic user `sso-${userId}@sso.local`
+ */
+export async function handleSSOLogin(request: Request, env: Env): Promise<Response> {
+  try {
+    // Fail closed: SSO is a security boundary, no graceful degradation
+    if (!env.SSO_SECRET) {
+      return new Response(JSON.stringify({ error: 'SSO is not configured' }), {
+        status: 503,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const url = new URL(request.url)
+    const userId = url.searchParams.get('userId')
+    const expires = url.searchParams.get('expires')
+    const sig = url.searchParams.get('sig')
+
+    if (!userId || !expires || !sig) {
+      return new Response(JSON.stringify({ error: 'Missing SSO parameters' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Validate formats. userId charset excludes '@' so the synthetic email stays well-formed
+    if (!/^[A-Za-z0-9_.-]{1,128}$/.test(userId)) {
+      return new Response(JSON.stringify({ error: 'Invalid userId format' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+    if (!/^\d{13}$/.test(expires)) {
+      return new Response(JSON.stringify({ error: 'Invalid expires format' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const expiresAt = parseInt(expires, 10)
+    const now = Date.now()
+
+    // Link must not be expired nor valid for more than 10 minutes
+    if (now > expiresAt) {
+      return new Response(JSON.stringify({ error: 'SSO link expired' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+    if (expiresAt - now > 10 * 60 * 1000) {
+      return new Response(JSON.stringify({ error: 'Invalid SSO link' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Verify HMAC signature
+    const signatureValid = await verifySSOSignature(env.SSO_SECRET, userId, expires, sig)
+    if (!signatureValid) {
+      return new Response(JSON.stringify({ error: 'Invalid SSO signature' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Find or create the synthetic user
+    const email = `sso-${userId}@sso.local`
+    let user = await getUserByEmail(env, email)
+    if (!user) {
+      user = await createUser(env, email)
+    }
+
+    if (user.status === 'banned') {
+      return new Response(JSON.stringify({ error: 'Account is banned' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Create session and update last login
+    const session = await createSession(env, user.id)
+    await updateLastLogin(env, user.id)
+
+    return new Response(JSON.stringify({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        status: user.status,
+      },
+      token: session.token,
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  } catch (error: any) {
+    console.error('SSO login error:', error)
+    return new Response(JSON.stringify({ error: error.message || 'Failed to login via SSO' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+}
+
 // Helper functions
+
+/**
+ * Compute HMAC-SHA256 over `${userId}.${expires}` and compare with provided
+ * hex signature in constant time.
+ */
+async function verifySSOSignature(secret: string, userId: string, expires: string, sig: string): Promise<boolean> {
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  )
+  const mac = await crypto.subtle.sign('HMAC', key, encoder.encode(`${userId}.${expires}`))
+  const expected = [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, '0')).join('')
+
+  if (expected.length !== sig.length) return false
+  let diff = 0
+  for (let i = 0; i < expected.length; i++) {
+    diff |= expected.charCodeAt(i) ^ sig.toLowerCase().charCodeAt(i)
+  }
+  return diff === 0
+}
 
 function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

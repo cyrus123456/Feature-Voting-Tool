@@ -9,6 +9,7 @@ import {
   handleVerifyToken,
   handleGetCurrentUser,
   handleLogout,
+  handleSSOLogin,
 } from "./handlers/auth";
 import {
   handleCreateSuggestion,
@@ -51,6 +52,7 @@ export interface Env {
   RECAPTCHA_SECRET_KEY: string;
   RECAPTCHA_SITE_KEY: string;
   APP_URL: string; // e.g., https://idea.nginxwaf.me
+  SSO_SECRET?: string; // HMAC secret for SSO auto-login links (fail-closed if unset)
 }
 
 export default {
@@ -122,6 +124,10 @@ export default {
 
       if (path === "/api/auth/logout" && request.method === "POST") {
         return await handleLogout(request, env);
+      }
+
+      if (path === "/api/auth/sso" && request.method === "GET") {
+        return await handleSSOLogin(request, env);
       }
 
       // Suggestion endpoints
