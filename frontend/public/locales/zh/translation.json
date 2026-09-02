@@ -1,0 +1,93 @@
+{
+  "app": {
+    "title": "功能投票",
+    "tagline": "为你希望看到的功能投票"
+  },
+  "nav": {
+    "home": "首页",
+    "admin": "管理"
+  },
+  "features": {
+    "title": "功能",
+    "noFeatures": "暂无功能，敬请期待！",
+    "voteUp": "赞同",
+    "voteDown": "反对",
+    "votes": "票",
+    "loading": "正在加载功能...",
+    "error": "加载功能失败",
+    "browse": "浏览功能",
+    "total": "功能",
+    "totalVotes": "总票数"
+  },
+  "vote": {
+    "success": "投票成功！",
+    "error": "投票失败，请重试。",
+    "rateLimit": "操作太频繁，请稍后再试。"
+  },
+  "admin": {
+    "title": "管理后台",
+    "login": "登录",
+    "logout": "退出登录",
+    "token": "管理员令牌",
+    "loginButton": "登录",
+    "stats": {
+      "title": "统计",
+      "totalFeatures": "功能总数",
+      "totalVotes": "总票数",
+      "topFeature": "热门功能"
+    },
+    "features": {
+      "title": "功能管理",
+      "add": "新增功能",
+      "edit": "编辑",
+      "delete": "删除",
+      "save": "保存",
+      "cancel": "取消"
+    },
+    "form": {
+      "titleEn": "标题（英文）",
+      "titleVi": "标题（越南语）",
+      "descEn": "描述（英文）",
+      "descVi": "描述（越南语）",
+      "required": "此字段为必填项"
+    }
+  },
+  "language": {
+    "label": "语言",
+    "en": "English",
+    "vi": "Tiếng Việt",
+    "zh": "中文"
+  },
+  "suggestion": {
+    "title": "提交新功能建议",
+    "description": "分享你的新功能创意！管理员会审核你的建议，通过后会加入投票列表，让社区来投票。",
+    "titleEn": "标题（英文）",
+    "titleVi": "标题（越南语）",
+    "descEn": "描述（英文）",
+    "descVi": "描述（越南语）",
+    "placeholderTitleEn": "例如：深色模式支持",
+    "placeholderTitleVi": "例如：Hỗ trợ chế độ tối",
+    "placeholderDescEn": "描述你的功能创意...",
+    "placeholderDescVi": "Mô tả ý tưởng của bạn...",
+    "required": "必填",
+    "cancel": "取消",
+    "submit": "提交建议",
+    "submitting": "提交中...",
+    "success": {
+      "title": "建议提交成功！",
+      "description": "你的功能建议已发送给管理员审核。审核通过或加入投票列表后会通知你。"
+    },
+    "error": {
+      "title": "提交失败",
+      "description": "无法提交你的建议，请检查网络连接后重试。",
+      "authRequired": {
+        "title": "需要登录",
+        "description": "请先登录后再提交功能建议"
+      },
+      "missingFields": {
+        "title": "缺少必填字段",
+        "description": "请同时填写英文和越南语标题，方便大家理解你的建议"
+      }
+    }
+  }
+}

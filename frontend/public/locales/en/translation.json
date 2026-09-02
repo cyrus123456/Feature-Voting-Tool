@@ -53,8 +53,10 @@
     }
   },
   "language": {
+    "label": "Language",
     "en": "English",
-    "vi": "Tiếng Việt"
+    "vi": "Tiếng Việt",
+    "zh": "中文"
   },
   "suggestion": {
     "title": "Suggest a New Feature",

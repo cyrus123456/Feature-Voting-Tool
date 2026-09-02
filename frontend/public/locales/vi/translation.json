@@ -53,8 +53,10 @@
     }
   },
   "language": {
+    "label": "Ngôn ngữ",
     "en": "English",
-    "vi": "Tiếng Việt"
+    "vi": "Tiếng Việt",
+    "zh": "中文"
   },
   "suggestion": {
     "title": "Đề Xuất Tính Năng Mới",
