@@ -4,11 +4,11 @@
 
 English | [Tiếng Việt](README.vi.md)
 
-A multilingual feature voting system (English and Vietnamese) that allows users to suggest and vote for new features. This project uses Cloudflare Workers as the backend and React as the frontend.
+A multilingual UI feature voting system that allows users to suggest and vote for new features. This project uses Cloudflare Workers as the backend and React as the frontend.
 
 ## Features
 
-- 🌐 Multilingual support (English and Vietnamese)
+- 🌐 Multilingual UI (English, Vietnamese, Chinese)
 - 🗳️ Vote for features (upvote/downvote)
 - 🔒 Admin authentication
 - 📊 Statistics and analytics
@@ -378,7 +378,7 @@ See [EMAIL_SETUP.md](EMAIL_SETUP.md) for detailed setup instructions, including:
 - ✅ **Approval Email**: Sent when a suggestion is approved and converted to a feature
 - ✅ **Rejection Email**: Sent when a suggestion is rejected with helpful feedback
 
-Both templates are bilingual (English/Vietnamese) with beautiful HTML design and plain text fallback.
+Both templates show the suggestion title (single-language content) with beautiful HTML design and plain text fallback.
 
 ## Customization
 
@@ -391,7 +391,10 @@ Both templates are bilingual (English/Vietnamese) with beautiful HTML design and
 ### Adding a new language
 
 1. Create a new language file in `frontend/public/locales/`
-2. Update the database schema to add new language fields
+2. Add the language code to `supportedLngs`/`resources` in `frontend/src/lib/i18n.ts`
+3. Add an entry to the language switcher in `frontend/src/components/LanguageSwitcher.tsx`
+
+UI labels are translated through locale files; feature content itself is stored in a single language.
 
 ## API Endpoints
 

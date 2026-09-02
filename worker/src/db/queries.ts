@@ -2,8 +2,8 @@ import { Env } from '../index'
 
 export interface Feature {
   id: string
-  title: { vi: string; en: string }
-  description: { vi: string; en: string }
+  title: string
+  description: string
   votesUp: number
   votesDown: number
   createdAt: number
@@ -14,10 +14,8 @@ export async function getAllFeatures(env: Env): Promise<Feature[]> {
   const { results } = await env.DB.prepare(`
     SELECT 
       f.id,
-      f.title_en,
-      f.title_vi,
-      f.desc_en,
-      f.desc_vi,
+      f.title,
+      f.description,
       f.created_at,
       f.updated_at,
       COALESCE(SUM(CASE WHEN v.vote_type = 'up' THEN 1 ELSE 0 END), 0) as votes_up,
@@ -30,8 +28,8 @@ export async function getAllFeatures(env: Env): Promise<Feature[]> {
 
   return results.map((row: any) => ({
     id: row.id,
-    title: { en: row.title_en, vi: row.title_vi },
-    description: { en: row.desc_en || '', vi: row.desc_vi || '' },
+    title: row.title,
+    description: row.description || '',
     votesUp: row.votes_up,
     votesDown: row.votes_down,
     createdAt: row.created_at,
@@ -43,10 +41,8 @@ export async function getFeatureById(env: Env, id: string): Promise<Feature | nu
   const { results } = await env.DB.prepare(`
     SELECT 
       f.id,
-      f.title_en,
-      f.title_vi,
-      f.desc_en,
-      f.desc_vi,
+      f.title,
+      f.description,
       f.created_at,
       f.updated_at,
       COALESCE(SUM(CASE WHEN v.vote_type = 'up' THEN 1 ELSE 0 END), 0) as votes_up,
@@ -62,8 +58,8 @@ export async function getFeatureById(env: Env, id: string): Promise<Feature | nu
   const row: any = results[0]
   return {
     id: row.id,
-    title: { en: row.title_en, vi: row.title_vi },
-    description: { en: row.desc_en || '', vi: row.desc_vi || '' },
+    title: row.title,
+    description: row.description || '',
     votesUp: row.votes_up,
     votesDown: row.votes_down,
     createdAt: row.created_at,
@@ -73,15 +69,15 @@ export async function getFeatureById(env: Env, id: string): Promise<Feature | nu
 
 export async function createFeature(
   env: Env,
-  data: { title: { en: string; vi: string }; description: { en: string; vi: string } }
+  data: { title: string; description: string }
 ): Promise<Feature> {
   const id = crypto.randomUUID()
   const now = Date.now()
 
   await env.DB.prepare(`
-    INSERT INTO features (id, title_en, title_vi, desc_en, desc_vi, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).bind(id, data.title.en, data.title.vi, data.description.en, data.description.vi, now, now).run()
+    INSERT INTO features (id, title, description, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?)
+  `).bind(id, data.title, data.description, now, now).run()
 
   return {
     id,
@@ -97,20 +93,20 @@ export async function createFeature(
 export async function updateFeature(
   env: Env,
   id: string,
-  data: Partial<{ title: { en: string; vi: string }; description: { en: string; vi: string } }>
+  data: Partial<{ title: string; description: string }>
 ): Promise<void> {
   const now = Date.now()
   const updates: string[] = []
   const bindings: any[] = []
 
-  if (data.title) {
-    updates.push('title_en = ?', 'title_vi = ?')
-    bindings.push(data.title.en, data.title.vi)
+  if (data.title !== undefined) {
+    updates.push('title = ?')
+    bindings.push(data.title)
   }
 
-  if (data.description) {
-    updates.push('desc_en = ?', 'desc_vi = ?')
-    bindings.push(data.description.en, data.description.vi)
+  if (data.description !== undefined) {
+    updates.push('description = ?')
+    bindings.push(data.description)
   }
 
   updates.push('updated_at = ?')

@@ -28,7 +28,7 @@ export async function handleGetAllComments(request: Request, env: Env): Promise<
 
     let query = `
       SELECT c.*, u.email as user_email, u.name as user_name, u.role as user_role,
-             f.title_en as feature_title
+             f.title as feature_title
       FROM comments c
       JOIN users u ON c.user_id = u.id
       LEFT JOIN features f ON c.feature_id = f.id

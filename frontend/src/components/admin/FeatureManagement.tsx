@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
 import {
   Table,
@@ -45,21 +46,16 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
 
 interface Feature {
   id: string
-  title: {
-    en: string
-    vi: string
-  }
-  description: {
-    en: string
-    vi: string
-  }
+  title: string
+  description: string
   votesUp: number
   votesDown: number
-  created_at: number
-  updated_at: number
+  createdAt: number
+  updatedAt: number
 }
 
 export default function FeatureManagement() {
+  const { t } = useTranslation()
   const { token } = useAuth()
   const { toast } = useToast()
   const [features, setFeatures] = useState<Feature[]>([])
@@ -74,10 +70,8 @@ export default function FeatureManagement() {
 
   // Form states
   const [formData, setFormData] = useState({
-    title_en: '',
-    title_vi: '',
-    desc_en: '',
-    desc_vi: '',
+    title: '',
+    description: '',
   })
 
   useEffect(() => {
@@ -113,14 +107,8 @@ export default function FeatureManagement() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title: {
-            en: formData.title_en,
-            vi: formData.title_vi,
-          },
-          description: {
-            en: formData.desc_en,
-            vi: formData.desc_vi,
-          },
+          title: formData.title,
+          description: formData.description,
         }),
       })
 
@@ -156,14 +144,8 @@ export default function FeatureManagement() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            title: {
-              en: formData.title_en,
-              vi: formData.title_vi,
-            },
-            description: {
-              en: formData.desc_en,
-              vi: formData.desc_vi,
-            },
+            title: formData.title,
+            description: formData.description,
           }),
         }
       )
@@ -222,10 +204,8 @@ export default function FeatureManagement() {
 
   function resetForm() {
     setFormData({
-      title_en: '',
-      title_vi: '',
-      desc_en: '',
-      desc_vi: '',
+      title: '',
+      description: '',
     })
     setSelectedFeature(null)
   }
@@ -233,20 +213,16 @@ export default function FeatureManagement() {
   function openEditDialog(feature: Feature) {
     setSelectedFeature(feature)
     setFormData({
-      title_en: feature.title.en,
-      title_vi: feature.title.vi,
-      desc_en: feature.description.en || '',
-      desc_vi: feature.description.vi || '',
+      title: feature.title,
+      description: feature.description || '',
     })
     setShowEditDialog(true)
   }
 
   const filteredFeatures = features.filter(
     (feature) =>
-      feature.title.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      feature.title.vi.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (feature.description.en || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (feature.description.vi || '').toLowerCase().includes(searchQuery.toLowerCase())
+      feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (feature.description || '').toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const totalVotes = features.reduce((sum, f) => sum + f.votesUp + f.votesDown, 0)
@@ -348,15 +324,13 @@ export default function FeatureManagement() {
                 <TableRow key={feature.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium">{feature.title.en}</p>
-                      <p className="text-sm text-muted-foreground">{feature.title.vi}</p>
+                      <p className="font-medium">{feature.title}</p>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="max-w-md">
-                      <p className="text-sm truncate">{feature.description.en || 'No description'}</p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {feature.description.vi || 'Không có mô tả'}
+                      <p className="text-sm truncate">
+                        {feature.description || 'No description'}
                       </p>
                     </div>
                   </TableCell>
@@ -379,7 +353,7 @@ export default function FeatureManagement() {
                     </div>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
-                    {formatDate(feature.created_at)}
+                    {formatDate(feature.createdAt)}
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
@@ -424,40 +398,23 @@ export default function FeatureManagement() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="title_en">Title (English) *</Label>
+              <Label htmlFor="create_title">
+                {t('admin.form.title')} <span className="text-destructive">*</span>
+              </Label>
               <Input
-                id="title_en"
-                placeholder="Enter feature title in English"
-                value={formData.title_en}
-                onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                id="create_title"
+                placeholder={t('admin.form.titlePlaceholder')}
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="title_vi">Title (Vietnamese) *</Label>
-              <Input
-                id="title_vi"
-                placeholder="Nhập tiêu đề tính năng bằng tiếng Việt"
-                value={formData.title_vi}
-                onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="desc_en">Description (English)</Label>
+              <Label htmlFor="create_description">{t('admin.form.description')}</Label>
               <Textarea
-                id="desc_en"
-                placeholder="Enter feature description in English"
-                value={formData.desc_en}
-                onChange={(e) => setFormData({ ...formData, desc_en: e.target.value })}
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="desc_vi">Description (Vietnamese)</Label>
-              <Textarea
-                id="desc_vi"
-                placeholder="Nhập mô tả tính năng bằng tiếng Việt"
-                value={formData.desc_vi}
-                onChange={(e) => setFormData({ ...formData, desc_vi: e.target.value })}
+                id="create_description"
+                placeholder={t('admin.form.descriptionPlaceholder')}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
               />
             </div>
@@ -472,10 +429,7 @@ export default function FeatureManagement() {
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleCreateFeature}
-              disabled={!formData.title_en || !formData.title_vi}
-            >
+            <Button onClick={handleCreateFeature} disabled={!formData.title}>
               Create Feature
             </Button>
           </DialogFooter>
@@ -491,40 +445,23 @@ export default function FeatureManagement() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit_title_en">Title (English) *</Label>
+              <Label htmlFor="edit_title">
+                {t('admin.form.title')} <span className="text-destructive">*</span>
+              </Label>
               <Input
-                id="edit_title_en"
-                placeholder="Enter feature title in English"
-                value={formData.title_en}
-                onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                id="edit_title"
+                placeholder={t('admin.form.titlePlaceholder')}
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit_title_vi">Title (Vietnamese) *</Label>
-              <Input
-                id="edit_title_vi"
-                placeholder="Nhập tiêu đề tính năng bằng tiếng Việt"
-                value={formData.title_vi}
-                onChange={(e) => setFormData({ ...formData, title_vi: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit_desc_en">Description (English)</Label>
+              <Label htmlFor="edit_description">{t('admin.form.description')}</Label>
               <Textarea
-                id="edit_desc_en"
-                placeholder="Enter feature description in English"
-                value={formData.desc_en}
-                onChange={(e) => setFormData({ ...formData, desc_en: e.target.value })}
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit_desc_vi">Description (Vietnamese)</Label>
-              <Textarea
-                id="edit_desc_vi"
-                placeholder="Nhập mô tả tính năng bằng tiếng Việt"
-                value={formData.desc_vi}
-                onChange={(e) => setFormData({ ...formData, desc_vi: e.target.value })}
+                id="edit_description"
+                placeholder={t('admin.form.descriptionPlaceholder')}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
               />
             </div>
@@ -539,10 +476,7 @@ export default function FeatureManagement() {
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleUpdateFeature}
-              disabled={!formData.title_en || !formData.title_vi}
-            >
+            <Button onClick={handleUpdateFeature} disabled={!formData.title}>
               Update Feature
             </Button>
           </DialogFooter>
@@ -560,8 +494,7 @@ export default function FeatureManagement() {
           </DialogHeader>
           <div className="py-4">
             <div className="p-4 bg-secondary rounded-lg">
-              <p className="font-medium">{selectedFeature?.title.en}</p>
-              <p className="text-sm text-muted-foreground mt-1">{selectedFeature?.title.vi}</p>
+              <p className="font-medium">{selectedFeature?.title}</p>
             </div>
           </div>
           <DialogFooter>

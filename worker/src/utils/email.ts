@@ -143,8 +143,7 @@ If you didn't request this email, you can safely ignore it.
  * Generate suggestion approved email
  */
 export function generateSuggestionApprovedEmail(
-  titleEn: string,
-  titleVi: string,
+  title: string,
   featureUrl: string
 ): { html: string; text: string } {
   const html = `
@@ -168,8 +167,7 @@ export function generateSuggestionApprovedEmail(
     </p>
     
     <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #10b981; margin: 20px 0;">
-      <h3 style="color: #10b981; margin: 0 0 10px 0; font-size: 18px;">📌 ${titleEn}</h3>
-      <p style="color: #6b7280; margin: 0; font-size: 14px;">${titleVi}</p>
+      <h3 style="color: #10b981; margin: 0 0 10px 0; font-size: 18px;">📌 ${title}</h3>
     </div>
     
     <p style="color: #6b7280; font-size: 16px;">
@@ -197,8 +195,7 @@ export function generateSuggestionApprovedEmail(
 
 Great news! Your feature suggestion has been approved and created as a new feature:
 
-📌 ${titleEn}
-${titleVi}
+📌 ${title}
 
 Your suggestion is now live and other users can vote on it! Thank you for contributing to making our platform better.
 
@@ -214,8 +211,7 @@ Keep suggesting great ideas! We appreciate your contributions.
  * Generate suggestion rejected email
  */
 export function generateSuggestionRejectedEmail(
-  titleEn: string,
-  titleVi: string,
+  title: string,
   appUrl: string
 ): { html: string; text: string } {
   const html = `
@@ -239,8 +235,7 @@ export function generateSuggestionRejectedEmail(
     </p>
     
     <div style="background: white; padding: 20px; border-radius: 8px; border: 2px solid #6b7280; margin: 20px 0;">
-      <h3 style="color: #6b7280; margin: 0 0 10px 0; font-size: 18px;">📌 ${titleEn}</h3>
-      <p style="color: #6b7280; margin: 0; font-size: 14px;">${titleVi}</p>
+      <h3 style="color: #6b7280; margin: 0 0 10px 0; font-size: 18px;">📌 ${title}</h3>
     </div>
     
     <p style="color: #6b7280; font-size: 16px;">
@@ -281,8 +276,7 @@ Thank you for your suggestion!
 
 We've carefully reviewed your feature suggestion:
 
-📌 ${titleEn}
-${titleVi}
+📌 ${title}
 
 After careful consideration, we've decided not to proceed with this suggestion at this time. This could be due to various reasons such as:
 

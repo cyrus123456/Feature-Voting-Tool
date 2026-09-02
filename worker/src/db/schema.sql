@@ -1,10 +1,8 @@
 -- Features table
 CREATE TABLE IF NOT EXISTS features (
   id TEXT PRIMARY KEY,
-  title_en TEXT NOT NULL,
-  title_vi TEXT NOT NULL,
-  desc_en TEXT,
-  desc_vi TEXT,
+  title TEXT NOT NULL,
+  description TEXT,
   votes_up INTEGER DEFAULT 0,
   votes_down INTEGER DEFAULT 0,
   created_at INTEGER NOT NULL,
@@ -41,10 +39,8 @@ CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at);
 CREATE TABLE IF NOT EXISTS feature_suggestions (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
-  title_en TEXT NOT NULL,
-  title_vi TEXT NOT NULL,
-  desc_en TEXT,
-  desc_vi TEXT,
+  title TEXT NOT NULL,
+  description TEXT,
   status TEXT DEFAULT 'pending',
   approved_feature_id TEXT,
   created_at INTEGER NOT NULL,

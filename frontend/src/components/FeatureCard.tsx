@@ -18,7 +18,7 @@ interface FeatureCardProps {
 
 export default function FeatureCard({ feature, rank, onVoteSuccess }: FeatureCardProps) {
   const navigate = useNavigate()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { toast } = useToast()
   const { executeRecaptcha } = useRecaptcha()
   const [voting, setVoting] = useState(false)
@@ -26,10 +26,6 @@ export default function FeatureCard({ feature, rank, onVoteSuccess }: FeatureCar
     up: feature.votesUp,
     down: feature.votesDown,
   })
-
-  const currentLang = i18n.language as 'en' | 'vi'
-  const title = feature.title[currentLang] || feature.title.en
-  const description = feature.description[currentLang] || feature.description.en
 
   async function handleVote(voteType: 'up' | 'down') {
     if (voting) return
@@ -72,7 +68,7 @@ export default function FeatureCard({ feature, rank, onVoteSuccess }: FeatureCar
       <CardHeader className="pb-3" onClick={() => navigate(`/feature/${feature.id}`)}>
         <div className="flex items-start justify-between gap-2 mb-2">
           <CardTitle className="text-xl group-hover:text-primary transition-colors">
-            {title}
+            {feature.title}
           </CardTitle>
           {isTopRanked && (
             <Badge variant="default" className="flex items-center gap-1 shrink-0">
@@ -81,9 +77,9 @@ export default function FeatureCard({ feature, rank, onVoteSuccess }: FeatureCar
             </Badge>
           )}
         </div>
-        {description && (
+        {feature.description && (
           <CardDescription className="line-clamp-2">
-            {description}
+            {feature.description}
           </CardDescription>
         )}
       </CardHeader>

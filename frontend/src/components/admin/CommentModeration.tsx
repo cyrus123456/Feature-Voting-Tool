@@ -60,8 +60,7 @@ interface Comment {
   status: 'active' | 'hidden' | 'deleted'
   created_at: number
   updated_at: number
-  feature_title_en?: string
-  feature_title_vi?: string
+  feature_title?: string
 }
 
 export default function CommentModeration() {
@@ -202,7 +201,7 @@ export default function CommentModeration() {
     const matchesSearch =
       comment.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (comment.user_email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
-      (comment.feature_title_en?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+      (comment.feature_title?.toLowerCase() || '').includes(searchQuery.toLowerCase())
 
     const matchesStatus = statusFilter === 'all' || comment.status === statusFilter
 
@@ -376,7 +375,7 @@ export default function CommentModeration() {
                   </TableCell>
                   <TableCell>
                     <p className="text-sm text-muted-foreground">
-                      {comment.feature_title_en || 'Unknown'}
+                      {comment.feature_title || 'Unknown'}
                     </p>
                   </TableCell>
                   <TableCell>{getStatusBadge(comment.status)}</TableCell>
@@ -461,7 +460,7 @@ export default function CommentModeration() {
             <div>
               <label className="text-sm font-medium">Feature</label>
               <p className="text-sm text-muted-foreground mt-1">
-                {selectedComment?.feature_title_en || 'Unknown'}
+                {selectedComment?.feature_title || 'Unknown'}
               </p>
             </div>
             <div>

@@ -45,11 +45,10 @@
       "cancel": "Hủy"
     },
     "form": {
-      "titleEn": "Tiêu đề (Tiếng Anh)",
-      "titleVi": "Tiêu đề (Tiếng Việt)",
-      "descEn": "Mô tả (Tiếng Anh)",
-      "descVi": "Mô tả (Tiếng Việt)",
-      "required": "Trường này là bắt buộc"
+      "title": "Tiêu đề",
+      "description": "Mô tả",
+      "titlePlaceholder": "Nhập tiêu đề tính năng",
+      "descriptionPlaceholder": "Mô tả tính năng (tùy chọn)"
     }
   },
   "language": {
@@ -61,15 +60,10 @@
   "suggestion": {
     "title": "Đề Xuất Tính Năng Mới",
     "description": "Chia sẻ ý tưởng của bạn về tính năng mới! Đội ngũ quản trị sẽ xem xét đề xuất của bạn và nếu được chấp thuận, sẽ thêm vào danh sách bình chọn để cộng đồng bỏ phiếu.",
-    "titleEn": "Tiêu đề (Tiếng Anh)",
-    "titleVi": "Tiêu đề (Tiếng Việt)",
-    "descEn": "Mô tả (Tiếng Anh)",
-    "descVi": "Mô tả (Tiếng Việt)",
-    "placeholderTitleEn": "vd: Dark mode support",
-    "placeholderTitleVi": "vd: Hỗ trợ chế độ tối",
-    "placeholderDescEn": "Describe your feature idea...",
-    "placeholderDescVi": "Mô tả ý tưởng của bạn...",
-    "required": "Bắt buộc",
+    "labelTitle": "Tiêu đề",
+    "labelDescription": "Mô tả",
+    "placeholderTitle": "vd: Dark mode support",
+    "placeholderDescription": "Mô tả ý tưởng của bạn...",
     "cancel": "Hủy",
     "submit": "Gửi Đề Xuất",
     "submitting": "Đang gửi...",
@@ -86,7 +80,7 @@
       },
       "missingFields": {
         "title": "Thiếu Trường Bắt Buộc",
-        "description": "Vui lòng cung cấp tiêu đề bằng cả Tiếng Anh và Tiếng Việt để mọi người có thể hiểu đề xuất của bạn"
+        "description": "Vui lòng nhập tiêu đề cho đề xuất tính năng của bạn"
       }
     }
   }

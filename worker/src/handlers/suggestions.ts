@@ -46,8 +46,8 @@ function mapRowToSuggestion(row: any): Suggestion {
   return {
     id: row.id,
     user_id: row.user_id,
-    title: { en: row.title_en, vi: row.title_vi },
-    description: { en: row.desc_en || "", vi: row.desc_vi || "" },
+    title: row.title,
+    description: row.description || "",
     status: row.status,
     approved_feature_id: row.approved_feature_id,
     created_at: row.created_at,
@@ -89,9 +89,9 @@ function validateIdParam(
   return null;
 }
 
-function validateBilingualTitle(title: any): Response | null {
-  if (!title?.en || !title?.vi) {
-    return jsonResponse({ error: "Title (en and vi) required" }, 400);
+function validateTitle(title: any): Response | null {
+  if (typeof title !== "string" || !title.trim()) {
+    return jsonResponse({ error: "Title required" }, 400);
   }
   return null;
 }
@@ -138,8 +138,8 @@ async function updateSuggestionStatus(
 interface Suggestion {
   id: string;
   user_id: string;
-  title: { en: string; vi: string };
-  description: { en: string; vi: string };
+  title: string;
+  description: string;
   status: "pending" | "approved" | "rejected";
   approved_feature_id: string | null;
   created_at: number;
@@ -151,7 +151,7 @@ interface Suggestion {
  * Create a new feature suggestion
  * POST /api/suggestions
  * Headers: Authorization: Bearer <token>
- * Body: { title: { en, vi }, description: { en, vi } }
+ * Body: { title, description }
  */
 export async function handleCreateSuggestion(
   request: Request,
@@ -170,29 +170,20 @@ export async function handleCreateSuggestion(
     );
     if (recaptchaError) return recaptchaError;
 
-    const titleError = validateBilingualTitle(body.title);
+    const titleError = validateTitle(body.title);
     if (titleError) return titleError;
 
     const id = crypto.randomUUID();
     const now = Date.now();
-    const desc = body.description || { en: "", vi: "" };
+    const desc = typeof body.description === "string" ? body.description : "";
 
     await env.DB.prepare(
       `
-      INSERT INTO feature_suggestions (id, user_id, title_en, title_vi, desc_en, desc_vi, status, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?)
+      INSERT INTO feature_suggestions (id, user_id, title, description, status, created_at, updated_at)
+      VALUES (?, ?, ?, ?, 'pending', ?, ?)
     `,
     )
-      .bind(
-        id,
-        user!.id,
-        body.title.en,
-        body.title.vi,
-        desc.en,
-        desc.vi,
-        now,
-        now,
-      )
+      .bind(id, user!.id, body.title, desc, now, now)
       .run();
 
     return jsonResponse({
@@ -297,14 +288,8 @@ export async function handleApproveSuggestion(
     if (fetchError) return fetchError;
 
     const feature = await createFeature(env, {
-      title: {
-        en: suggestion.title_en as string,
-        vi: suggestion.title_vi as string,
-      },
-      description: {
-        en: (suggestion.desc_en as string) || "",
-        vi: (suggestion.desc_vi as string) || "",
-      },
+      title: suggestion.title as string,
+      description: (suggestion.description as string) || "",
     });
 
     await updateSuggestionStatus(env, suggestionId!, "approved", feature.id);
@@ -320,8 +305,7 @@ export async function handleApproveSuggestion(
       try {
         const featureUrl = `${env.APP_URL}/#feature-${feature.id}`;
         const emailContent = generateSuggestionApprovedEmail(
-          suggestion.title_en as string,
-          suggestion.title_vi as string,
+          suggestion.title as string,
           featureUrl,
         );
 
@@ -384,8 +368,7 @@ export async function handleRejectSuggestion(
     if (userResult && userResult.email) {
       try {
         const emailContent = generateSuggestionRejectedEmail(
-          suggestion.title_en as string,
-          suggestion.title_vi as string,
+          suggestion.title as string,
           env.APP_URL,
         );
 

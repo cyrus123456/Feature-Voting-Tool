@@ -356,11 +356,8 @@ export default function DashboardOverview() {
               <div className="space-y-3">
                 <div>
                   <h3 className="font-semibold text-lg">
-                    {dashboardData.features.topFeature.title?.en || "N/A"}
+                    {dashboardData.features.topFeature.title || "N/A"}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {dashboardData.features.topFeature.title?.vi || "N/A"}
-                  </p>
                 </div>
                 <div className="flex items-center gap-4 pt-2">
                   <div className="flex items-center gap-2">

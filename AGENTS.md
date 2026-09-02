@@ -2,7 +2,7 @@
 
 # Feature Voting Tool — Agent Guide
 
-Bilingual (en/vi) feature voting platform. Two **independent** packages (not a monorepo — no workspace config), both use **npm** (lockfiles committed, do not switch to pnpm without reason):
+Feature voting platform with multilingual UI (en/vi/zh); **feature content is single-language** (one title + description per item). Two **independent** packages (not a monorepo — no workspace config), both use **npm** (lockfiles committed, do not switch to pnpm without reason):
 
 - `frontend/` — Vite + React 18 + TypeScript + Tailwind + shadcn/ui (Radix)
 - `worker/` — Cloudflare Workers + D1 (SQLite) + KV, TypeScript, no router framework (manual `if`/regex dispatch in `worker/src/index.ts`)
@@ -31,9 +31,9 @@ There is **no test suite** in either package — don't assume `npm test` exists.
 ## Architecture notes
 
 - **Frontend path alias**: `@/*` → `./src/*` (configured in both `vite.config.ts` and `tsconfig.json`). Prefer `@/` imports over relative.
-- **i18n**: `react-i18next` with locale files in `frontend/public/locales/{en,vi}/`. Adding a language = new locale dir + backend wiring.
+- **i18n**: `react-i18next` with locale files in `frontend/public/locales/{en,vi,zh}/`. UI labels only — feature content is stored in a single language (no per-language DB fields).
 - **Worker routing**: all routes are explicit `path === ...` / `path.match(...)` branches in `worker/src/index.ts:56`. New endpoints must be added there manually — there is no decorator or router file to scan.
-- **Worker handlers** are split by domain in `worker/src/handlers/` (features, auth, admin, suggestions, comments, comment-moderation, user-management, suggestion-management). DB access goes through `worker/src/db/queries.ts`.
+- **Worker handlers** are split by domain in `worker/src/handlers/` (features, auth, admin, suggestions, comments, comment-moderation, user-management). DB access goes through `worker/src/db/queries.ts`.
 - **D1 binding** is `DB`; **KV binding** is `RATE_LIMIT_KV` (optional — rate limiting degrades gracefully if unset). `Env` interface is defined inline in `worker/src/index.ts:42`.
 
 ## Database migrations (D1)
@@ -41,11 +41,12 @@ There is **no test suite** in either package — don't assume `npm test` exists.
 Schema files live in `worker/src/db/`. CI runs them in this order against `--remote` (see `.github/workflows/deploy.yml`):
 
 1. `schema.sql` (base tables)
-2. `migration-add-admin-comments.sql`
-3. `migration-rbac.sql`
-4. `schema-v3.sql` (RBAC tables)
+2. `migration-content-single-language.sql` (collapses content to single title/description)
+3. `migration-add-admin-comments.sql`
+4. `migration-rbac.sql`
+5. `schema-v3.sql` (RBAC tables)
 
-Migrations are **idempotent-safe**: CI greps for `"duplicate column name"` / `"already exists"` and treats them as success. When writing a new migration, use `IF NOT EXISTS` / `INSERT OR IGNORE` so re-runs don't fail. Local DB init: `npx wrangler d1 execute feature-voting-db --file=./src/db/schema.sql`.
+Migrations are **idempotent-safe**: CI greps for `"duplicate column name"` / `"already exists"` (and `"no such column"` for the content migration) and treats them as success. When writing a new migration, use `IF NOT EXISTS` / `INSERT OR IGNORE` so re-runs don't fail. Local DB init: `npx wrangler d1 execute feature-voting-db --file=./src/db/schema.sql`. Note `schema.sql` already declares single-language columns; `migration-content-single-language.sql` only needs to be applied to upgrade a pre-refactor local DB.
 
 ## wrangler.toml placeholders
 

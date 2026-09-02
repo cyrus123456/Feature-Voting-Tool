@@ -45,11 +45,10 @@
       "cancel": "取消"
     },
     "form": {
-      "titleEn": "标题（英文）",
-      "titleVi": "标题（越南语）",
-      "descEn": "描述（英文）",
-      "descVi": "描述（越南语）",
-      "required": "此字段为必填项"
+      "title": "标题",
+      "description": "描述",
+      "titlePlaceholder": "输入功能标题",
+      "descriptionPlaceholder": "描述该功能（可选）"
     }
   },
   "language": {
@@ -61,15 +60,10 @@
   "suggestion": {
     "title": "提交新功能建议",
     "description": "分享你的新功能创意！管理员会审核你的建议，通过后会加入投票列表，让社区来投票。",
-    "titleEn": "标题（英文）",
-    "titleVi": "标题（越南语）",
-    "descEn": "描述（英文）",
-    "descVi": "描述（越南语）",
-    "placeholderTitleEn": "例如：深色模式支持",
-    "placeholderTitleVi": "例如：Hỗ trợ chế độ tối",
-    "placeholderDescEn": "描述你的功能创意...",
-    "placeholderDescVi": "Mô tả ý tưởng của bạn...",
-    "required": "必填",
+    "labelTitle": "标题",
+    "labelDescription": "描述",
+    "placeholderTitle": "例如：深色模式支持",
+    "placeholderDescription": "描述你的功能创意...",
     "cancel": "取消",
     "submit": "提交建议",
     "submitting": "提交中...",
@@ -86,7 +80,7 @@
       },
       "missingFields": {
         "title": "缺少必填字段",
-        "description": "请同时填写英文和越南语标题，方便大家理解你的建议"
+        "description": "请输入功能建议的标题"
       }
     }
   }

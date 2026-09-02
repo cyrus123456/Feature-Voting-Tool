@@ -41,10 +41,8 @@ CREATE INDEX IF NOT EXISTS idx_sessions_expires ON user_sessions(expires_at);
 CREATE TABLE IF NOT EXISTS feature_suggestions (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
-  title_en TEXT NOT NULL,
-  title_vi TEXT NOT NULL,
-  desc_en TEXT,
-  desc_vi TEXT,
+  title TEXT NOT NULL,
+  description TEXT,
   status TEXT DEFAULT 'pending', -- pending, approved, rejected
   approved_feature_id TEXT, -- links to features table if approved
   reviewed_by TEXT, -- admin/moderator who reviewed

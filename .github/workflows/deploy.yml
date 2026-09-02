@@ -89,12 +89,27 @@ jobs:
           else
             echo "✓ Base tables verified"
           fi
-          
-          # Step 2: Run admin comments migration (backward compatible)
+
+          # Step 2: Collapse bilingual content columns to single title/description
           echo ""
-          echo "Step 2: Running admin comments migration..."
+          echo "Step 2: Running content single-language migration..."
+          npx wrangler d1 execute feature-voting-db --file=./src/db/migration-content-single-language.sql --remote 2>&1 | tee content-single.log || true
+
+          if grep -q "no such column" content-single.log; then
+            echo "✓ Content already single-language - skipping"
+          elif grep -q "duplicate column name" content-single.log; then
+            echo "✓ Content columns already present - skipping"
+          elif grep -q "error" content-single.log; then
+            echo "⚠ Content migration may have failed - check logs"
+          else
+            echo "✓ Content single-language migration completed"
+          fi
+
+          # Step 3: Run admin comments migration (backward compatible)
+          echo ""
+          echo "Step 3: Running admin comments migration..."
           npx wrangler d1 execute feature-voting-db --file=./src/db/migration-add-admin-comments.sql --remote 2>&1 | tee admin-comments.log || true
-          
+
           if grep -q "duplicate column name" admin-comments.log; then
             echo "✓ Admin comments column already exists - skipping"
           elif grep -q "error" admin-comments.log; then
@@ -102,12 +117,12 @@ jobs:
           else
             echo "✓ Admin comments migration completed"
           fi
-          
-          # Step 3: Run RBAC migration (safe - uses ALTER TABLE ADD COLUMN IF NOT EXISTS pattern)
+
+          # Step 4: Run RBAC migration (safe - uses ALTER TABLE ADD COLUMN IF NOT EXISTS pattern)
           echo ""
-          echo "Step 3: Running RBAC migration..."
+          echo "Step 4: Running RBAC migration..."
           npx wrangler d1 execute feature-voting-db --file=./src/db/migration-rbac.sql --remote 2>&1 | tee rbac.log || true
-          
+
           if grep -q "duplicate column name" rbac.log; then
             echo "✓ RBAC columns already exist - skipping"
           elif grep -q "error" rbac.log && ! grep -q "already exists" rbac.log; then
@@ -115,10 +130,10 @@ jobs:
           else
             echo "✓ RBAC migration completed"
           fi
-          
-          # Step 4: Ensure new tables from schema v3 exist
+
+          # Step 5: Ensure new tables from schema v3 exist
           echo ""
-          echo "Step 4: Ensuring RBAC tables exist..."
+          echo "Step 5: Ensuring RBAC tables exist..."
           npx wrangler d1 execute feature-voting-db --file=./src/db/schema-v3.sql --remote 2>&1 | tee schema-v3.log || true
           
           if grep -q "error" schema-v3.log && ! grep -q "already exists" schema-v3.log; then

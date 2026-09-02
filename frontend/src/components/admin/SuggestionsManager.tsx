@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -18,8 +17,8 @@ interface Suggestion {
   id: string;
   user_id: string;
   user_email?: string;
-  title: { en: string; vi: string };
-  description: { en: string; vi: string };
+  title: string;
+  description: string;
   status: "pending" | "approved" | "rejected";
   approved_feature_id: string | null;
   created_at: number;
@@ -172,11 +171,8 @@ export default function SuggestionsManager() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <CardTitle className="text-xl mb-2">
-                      {suggestion.title.en}
+                      {suggestion.title}
                     </CardTitle>
-                    <CardDescription className="text-base">
-                      {suggestion.title.vi}
-                    </CardDescription>
                   </div>
                   <Badge variant="outline" className="shrink-0">
                     <Clock className="w-3 h-3 mr-1" />
@@ -186,19 +182,10 @@ export default function SuggestionsManager() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Description */}
-                {(suggestion.description.en || suggestion.description.vi) && (
-                  <div className="space-y-2">
-                    {suggestion.description.en && (
-                      <p className="text-sm text-muted-foreground">
-                        <strong>EN:</strong> {suggestion.description.en}
-                      </p>
-                    )}
-                    {suggestion.description.vi && (
-                      <p className="text-sm text-muted-foreground">
-                        <strong>VI:</strong> {suggestion.description.vi}
-                      </p>
-                    )}
-                  </div>
+                {suggestion.description && (
+                  <p className="text-sm text-muted-foreground">
+                    {suggestion.description}
+                  </p>
                 )}
 
                 {/* Meta */}

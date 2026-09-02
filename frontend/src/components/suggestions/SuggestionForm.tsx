@@ -31,10 +31,8 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
   const { executeRecaptcha } = useRecaptcha()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    titleEn: '',
-    titleVi: '',
-    descEn: '',
-    descVi: '',
+    title: '',
+    description: '',
   })
 
   async function handleSubmit(e: React.FormEvent) {
@@ -50,7 +48,7 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
       return
     }
 
-    if (!formData.titleEn || !formData.titleVi) {
+    if (!formData.title.trim()) {
       toast({
         title: `⚠️ ${t('suggestion.error.missingFields.title')}`,
         description: t('suggestion.error.missingFields.description'),
@@ -73,8 +71,8 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          title: { en: formData.titleEn, vi: formData.titleVi },
-          description: { en: formData.descEn, vi: formData.descVi },
+          title: formData.title,
+          description: formData.description,
           recaptchaToken,
         }),
       })
@@ -84,8 +82,8 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
       }
 
       // Reset form data first
-      setFormData({ titleEn: '', titleVi: '', descEn: '', descVi: '' })
-      
+      setFormData({ title: '', description: '' })
+
       // Show success toast
       toast({
         title: `✅ ${t('suggestion.success.title')}`,
@@ -125,54 +123,28 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="grid gap-4">
-            {/* Title EN */}
+            {/* Title */}
             <div className="space-y-2">
-              <Label htmlFor="titleEn">
-                {t('suggestion.titleEn')} <span className="text-destructive">*</span>
+              <Label htmlFor="title">
+                {t('suggestion.labelTitle')} <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="titleEn"
-                value={formData.titleEn}
-                onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
-                placeholder={t('suggestion.placeholderTitleEn')}
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder={t('suggestion.placeholderTitle')}
                 required
               />
             </div>
 
-            {/* Title VI */}
+            {/* Description */}
             <div className="space-y-2">
-              <Label htmlFor="titleVi">
-                {t('suggestion.titleVi')} <span className="text-destructive">*</span>
-              </Label>
-              <Input
-                id="titleVi"
-                value={formData.titleVi}
-                onChange={(e) => setFormData({ ...formData, titleVi: e.target.value })}
-                placeholder={t('suggestion.placeholderTitleVi')}
-                required
-              />
-            </div>
-
-            {/* Description EN */}
-            <div className="space-y-2">
-              <Label htmlFor="descEn">{t('suggestion.descEn')}</Label>
+              <Label htmlFor="description">{t('suggestion.labelDescription')}</Label>
               <Textarea
-                id="descEn"
-                value={formData.descEn}
-                onChange={(e) => setFormData({ ...formData, descEn: e.target.value })}
-                placeholder={t('suggestion.placeholderDescEn')}
-                rows={4}
-              />
-            </div>
-
-            {/* Description VI */}
-            <div className="space-y-2">
-              <Label htmlFor="descVi">{t('suggestion.descVi')}</Label>
-              <Textarea
-                id="descVi"
-                value={formData.descVi}
-                onChange={(e) => setFormData({ ...formData, descVi: e.target.value })}
-                placeholder={t('suggestion.placeholderDescVi')}
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder={t('suggestion.placeholderDescription')}
                 rows={4}
               />
             </div>

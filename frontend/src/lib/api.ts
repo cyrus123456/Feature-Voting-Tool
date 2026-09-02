@@ -3,8 +3,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.idea.nginxwaf.
 
 export interface Feature {
   id: string
-  title: { vi: string; en: string }
-  description: { vi: string; en: string }
+  title: string
+  description: string
   votesUp: number
   votesDown: number
   createdAt: number

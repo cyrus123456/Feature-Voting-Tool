@@ -69,18 +69,18 @@ export async function handleAdminFeatures(
       );
       if (recaptchaError) return recaptchaError;
 
-      if (!body.title?.en || !body.title?.vi) {
-        return jsonResponse({ error: "Title (en and vi) required" }, 400);
+      if (typeof body.title !== "string" || !body.title.trim()) {
+        return jsonResponse({ error: "Title required" }, 400);
       }
 
       const feature = await createFeature(env, {
         title: body.title,
-        description: body.description || { en: "", vi: "" },
+        description: typeof body.description === "string" ? body.description : "",
       });
 
       await sendTelegramNotification(
         env,
-        `✨ New feature added: "${feature.title.en}"`,
+        `✨ New feature added: "${feature.title}"`,
       );
 
       return jsonResponse(feature);

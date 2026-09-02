@@ -318,7 +318,10 @@ Xem [RECAPTCHA_SETUP.md](RECAPTCHA_SETUP.md) để biết hướng dẫn cài đ
 ### Thêm ngôn ngữ mới
 
 1. Tạo file ngôn ngữ mới trong `frontend/public/locales/`
-2. Cập nhật schema cơ sở dữ liệu để thêm các trường ngôn ngữ mới
+2. Thêm mã ngôn ngữ vào `supportedLngs`/`resources` trong `frontend/src/lib/i18n.ts`
+3. Thêm mục vào bộ chuyển ngôn ngữ trong `frontend/src/components/LanguageSwitcher.tsx`
+
+Nhãn giao diện được dịch qua các file locale; nội dung tính năng chỉ lưu một ngôn ngữ duy nhất.
 
 ## API Endpoints
 

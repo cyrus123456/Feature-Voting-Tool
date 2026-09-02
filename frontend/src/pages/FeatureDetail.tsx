@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ThumbsUp, ThumbsDown, Loader2, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,8 +12,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
 
 interface Feature {
   id: string
-  title: { en: string; vi: string }
-  description: { en: string; vi: string }
+  title: string
+  description: string
   votesUp: number
   votesDown: number
   createdAt: number
@@ -23,7 +22,6 @@ interface Feature {
 export default function FeatureDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { i18n } = useTranslation()
   const { toast } = useToast()
   const { executeRecaptcha } = useRecaptcha()
   const [feature, setFeature] = useState<Feature | null>(null)
@@ -128,9 +126,6 @@ export default function FeatureDetail() {
     )
   }
 
-  const currentLang = i18n.language as 'en' | 'vi'
-  const title = feature.title[currentLang] || feature.title.en
-  const description = feature.description[currentLang] || feature.description.en
   const netVotes = feature.votesUp - feature.votesDown
 
   return (
@@ -145,7 +140,7 @@ export default function FeatureDetail() {
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
-            <CardTitle className="text-3xl">{title}</CardTitle>
+            <CardTitle className="text-3xl">{feature.title}</CardTitle>
             <Badge 
               variant={netVotes > 0 ? 'default' : netVotes < 0 ? 'destructive' : 'secondary'}
               className="text-lg px-4 py-2 font-mono shrink-0"
@@ -156,10 +151,10 @@ export default function FeatureDetail() {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Description */}
-          {description && (
+          {feature.description && (
             <div className="prose prose-sm max-w-none">
               <p className="text-base text-muted-foreground whitespace-pre-wrap">
-                {description}
+                {feature.description}
               </p>
             </div>
           )}

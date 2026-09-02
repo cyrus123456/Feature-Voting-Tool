@@ -103,7 +103,7 @@ export async function handleVote(
       ctx.waitUntil(
         sendTelegramNotification(
           env,
-          `🎉 Feature "${updatedFeature.title.en}" has reached ${netVotes} net votes!`
+          `🎉 Feature "${updatedFeature.title}" has reached ${netVotes} net votes!`
         )
       )
     }

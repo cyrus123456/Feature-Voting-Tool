@@ -45,11 +45,10 @@
       "cancel": "Cancel"
     },
     "form": {
-      "titleEn": "Title (English)",
-      "titleVi": "Title (Vietnamese)",
-      "descEn": "Description (English)",
-      "descVi": "Description (Vietnamese)",
-      "required": "This field is required"
+      "title": "Title",
+      "description": "Description",
+      "titlePlaceholder": "Enter feature title",
+      "descriptionPlaceholder": "Describe the feature (optional)"
     }
   },
   "language": {
@@ -61,15 +60,10 @@
   "suggestion": {
     "title": "Suggest a New Feature",
     "description": "Share your idea for a new feature! Our admin team will review your suggestion and, if approved, add it to the voting list for the community to vote on.",
-    "titleEn": "Title (English)",
-    "titleVi": "Title (Vietnamese)",
-    "descEn": "Description (English)",
-    "descVi": "Description (Vietnamese)",
-    "placeholderTitleEn": "e.g., Dark mode support",
-    "placeholderTitleVi": "e.g., Hỗ trợ chế độ tối",
-    "placeholderDescEn": "Describe your feature idea...",
-    "placeholderDescVi": "Mô tả ý tưởng của bạn...",
-    "required": "Required",
+    "labelTitle": "Title",
+    "labelDescription": "Description",
+    "placeholderTitle": "e.g., Dark mode support",
+    "placeholderDescription": "Describe your feature idea...",
     "cancel": "Cancel",
     "submit": "Submit Suggestion",
     "submitting": "Submitting...",
@@ -86,7 +80,7 @@
       },
       "missingFields": {
         "title": "Required Fields Missing",
-        "description": "Please provide titles in both English and Vietnamese to help everyone understand your suggestion"
+        "description": "Please enter a title for your feature suggestion"
       }
     }
   }
