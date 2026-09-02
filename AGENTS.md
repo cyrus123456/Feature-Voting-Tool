@@ -63,7 +63,7 @@ Migrations are **idempotent-safe**: CI greps for `"duplicate column name"` / `"a
 
 ## Gotchas
 
-- **`.gitignore` ends with `*.md`** — new Markdown files (including this `AGENTS.md`) are ignored by git by default. Already-tracked `.md` files (README, EMAIL_SETUP, RECAPTCHA_SETUP) are unaffected. To commit a new `.md` file, force-add it: `git add -f path/to/file.md`.
+- Markdown files (`*.md`) are **tracked normally** — an accidental `*.md` ignore rule was removed from `.gitignore` (commit `cb952dc`). New `.md` files can be committed with a plain `git add`.
 - Frontend `lint` fails on **any** warning (`--max-warnings 0`). Don't leave `eslint-disable` without a justification comment (`--report-unused-disable-directives` is on).
 - `frontend/build` runs `tsc` before `vite build` — type errors fail the build, not just the editor.
 - Worker `tsconfig.json` has `noEmit: true`; Wrangler bundles directly from source via the `[build] command = "npm install && npx tsc"` in `wrangler.toml` (typecheck-only, no JS output).
