@@ -2,13 +2,14 @@
 
 ![Feature Voting Platform](https://img.shields.io/badge/Status-Active-brightgreen)
 
-English | [Tiếng Việt](README.vi.md)
+English | [Tiếng Việt](README.vi.md) | [简体中文](README.zh.md)
 
 A multilingual UI feature voting system that allows users to suggest and vote for new features. This project uses Cloudflare Workers as the backend and React as the frontend.
 
 ## Features
 
 - 🌐 Multilingual UI (English, Vietnamese, Chinese)
+- 🔑 SSO auto-login (primary login method — signed links from your other apps)
 - 🗳️ Vote for features (upvote/downvote)
 - 🔒 Admin authentication
 - 📊 Statistics and analytics
@@ -165,6 +166,15 @@ npm run dev
 
 The frontend will run at http://localhost:5173 and the worker backend will run at http://localhost:8787.
 
+For SSO auto-login (the primary login method), set `SSO_SECRET` in `worker/.dev.vars`:
+
+```bash
+# worker/.dev.vars
+SSO_SECRET=your-dev-sso-secret
+```
+
+See the [SSO Auto-Login](#sso-auto-login) section below for how to generate login links.
+
 ## Environment Variables
 
 ### Frontend (.env)
@@ -204,6 +214,15 @@ Secret environment variables (set with `wrangler secret put`):
 - `SENDGRID_API_KEY`: API key for SendGrid email service (optional, alternative to Resend)
 - `TURNSTILE_SECRET_KEY`: Secret key for Cloudflare Turnstile (optional, anti-spam)
 - `SSO_SECRET`: HMAC secret for SSO auto-login links (optional; SSO endpoint is disabled if unset)
+
+## Authentication
+
+This platform supports two login methods:
+
+1. **SSO auto-login (primary)** — Users from your other applications are logged in automatically via a signed link. No email or reCAPTCHA needed. See [SSO Auto-Login](#sso-auto-login) below.
+2. **Magic link (email)** — Legacy fallback: users request a login link by email. Requires email service (Resend/SendGrid) and reCAPTCHA.
+
+SSO is the recommended method for production deployments integrated with an existing user system.
 
 ## SSO Auto-Login
 
@@ -273,6 +292,7 @@ Add the following secrets to your GitHub repository:
 | `TELEGRAM_CHAT_ID` | Telegram chat ID (ID of the chat or channel to receive notifications) | Optional |
 | `RESEND_API_KEY` | Resend API key (Get from Resend.com website) | Optional |
 | `APP_URL` | Frontend application URL (Defaults to https://idea.nginxwaf.me if not set) | Optional |
+| `SSO_SECRET` | HMAC secret for SSO auto-login links (the same value used by your other apps to sign links) | Recommended |
 
 ### How to Get Environment Variables from Cloudflare
 

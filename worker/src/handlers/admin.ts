@@ -10,6 +10,7 @@ import { corsHeaders } from "../utils/cors";
 import { verifyAdminAccess } from "../middleware/auth";
 import { sendTelegramNotification } from "../utils/telegram";
 import { verifyRecaptcha } from "../utils/recaptcha";
+import { assertNoSensitiveWords } from "../utils/profanity";
 
 // Helper functions to reduce duplication
 function jsonResponse(data: any, status = 200): Response {
@@ -73,6 +74,14 @@ export async function handleAdminFeatures(
         return jsonResponse({ error: "Title required" }, 400);
       }
 
+      const sensitiveError = assertNoSensitiveWords(
+        body.title,
+        typeof body.description === "string" ? body.description : undefined,
+      );
+      if (sensitiveError) {
+        return jsonResponse({ error: sensitiveError, code: "SENSITIVE_CONTENT" }, 400);
+      }
+
       const feature = await createFeature(env, {
         title: body.title,
         description: typeof body.description === "string" ? body.description : "",
@@ -100,6 +109,11 @@ export async function handleAdminFeatures(
         "admin_update_feature",
       );
       if (recaptchaError) return recaptchaError;
+
+      const sensitiveError = assertNoSensitiveWords(body.title, body.description);
+      if (sensitiveError) {
+        return jsonResponse({ error: sensitiveError, code: "SENSITIVE_CONTENT" }, 400);
+      }
 
       await updateFeature(env, featureId, body);
       const updated = await getFeatureById(env, featureId);

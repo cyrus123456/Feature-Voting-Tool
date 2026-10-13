@@ -2,7 +2,9 @@ import { Env } from '../index'
 import { corsHeaders } from '../utils/cors'
 import { verifyUserSession } from './auth'
 import { verifyRecaptcha } from '../utils/recaptcha'
+import { assertNoSensitiveWords } from '../utils/profanity'
 import { isAdminToken } from '../middleware/auth'
+import { sanitizeEmail } from '../utils/privacy'
 
 // Helper functions to reduce duplication
 function jsonResponse(data: any, status = 200): Response {
@@ -36,7 +38,7 @@ function mapRowToComment(row: any): Comment {
     created_at: row.created_at,
     updated_at: row.updated_at,
     ...(row.user_name && { user_name: row.user_name }),
-    ...(row.user_email && { user_email: row.user_email }),
+    ...(row.user_email && { user_email: sanitizeEmail(row.user_email, row.user_id) }),
   }
 }
 
@@ -216,6 +218,11 @@ export async function handleCreateComment(request: Request, env: Env): Promise<R
     const now = Date.now()
     const trimmedContent = body.content.trim()
 
+    const sensitiveError = assertNoSensitiveWords(trimmedContent)
+    if (sensitiveError) {
+      return jsonResponse({ error: sensitiveError, code: 'SENSITIVE_CONTENT' }, 400)
+    }
+
     // For admin comments, use a special user_id or create admin user entry
     const userId = isAdmin ? 'admin' : user!.id
     const isAdminFlag = isAdmin ? 1 : 0
@@ -235,7 +242,7 @@ export async function handleCreateComment(request: Request, env: Env): Promise<R
       created_at: now,
       updated_at: now,
       user_name: isAdmin ? 'Admin' : (user!.name || undefined),
-      user_email: isAdmin ? undefined : user!.email,
+      user_email: isAdmin ? undefined : sanitizeEmail(user!.email, user!.id),
     }, 201)
   } catch (error: any) {
     return handleError('Create comment', error)
@@ -256,6 +263,11 @@ export async function handleUpdateComment(request: Request, env: Env): Promise<R
     const body: any = await request.json()
     const contentError = validateContent(body.content)
     if (contentError) return contentError
+
+    const sensitiveError = assertNoSensitiveWords(body.content)
+    if (sensitiveError) {
+      return jsonResponse({ error: sensitiveError, code: 'SENSITIVE_CONTENT' }, 400)
+    }
 
     await env.DB.prepare(`
       UPDATE comments SET content = ?, updated_at = ? WHERE id = ?

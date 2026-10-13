@@ -78,7 +78,8 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
       })
 
       if (!response.ok) {
-        throw new Error('Failed to submit suggestion')
+        const err = await response.json().catch(() => ({}))
+        throw new Error(err.error || 'Failed to submit suggestion')
       }
 
       // Reset form data first

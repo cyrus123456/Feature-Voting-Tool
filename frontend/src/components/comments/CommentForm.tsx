@@ -62,7 +62,10 @@ export default function CommentForm({ featureId, parentId, onSuccess, onCancel }
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to post comment')
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}))
+        throw new Error(err.error || 'Failed to post comment')
+      }
 
       setContent('')
       onSuccess()

@@ -1,5 +1,6 @@
 import { Env } from '../index'
 import { corsHeaders } from '../utils/cors'
+import { sanitizeEmail } from '../utils/privacy'
 import { sendEmail, generateMagicLinkEmail } from '../utils/email'
 import { verifyRecaptcha } from '../utils/recaptcha'
 import { isAdminEmail, UserRole } from '../middleware/auth'
@@ -143,7 +144,7 @@ export async function handleVerifyToken(request: Request, env: Env): Promise<Res
       success: true,
       user: {
         id: user.id,
-        email: user.email,
+        email: sanitizeEmail(user.email, user.id),
         name: user.name,
         role: user.role,
         status: user.status,
@@ -197,7 +198,7 @@ export async function handleGetCurrentUser(request: Request, env: Env): Promise<
     return new Response(JSON.stringify({ 
       user: {
         id: user.id,
-        email: user.email,
+        email: sanitizeEmail(user.email, user.id),
         name: user.name,
         avatar_url: user.avatar_url,
         role: user.role,
@@ -338,7 +339,7 @@ export async function handleSSOLogin(request: Request, env: Env): Promise<Respon
       success: true,
       user: {
         id: user.id,
-        email: user.email,
+        email: sanitizeEmail(user.email, user.id),
         name: user.name,
         role: user.role,
         status: user.status,

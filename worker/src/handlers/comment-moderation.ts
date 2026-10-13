@@ -1,6 +1,7 @@
 import { Env } from '../index'
 import { corsHeaders } from '../utils/cors'
 import { verifyModeratorAccess, logAuditAction } from '../middleware/auth'
+import { sanitizeEmail } from '../utils/privacy'
 
 function jsonResponse(data: any, status = 200): Response {
   return new Response(JSON.stringify(data), {
@@ -67,7 +68,10 @@ export async function handleGetAllComments(request: Request, env: Env): Promise<
     const total = (countResult?.count as number) || 0
 
     return jsonResponse({
-      comments: result.results,
+      comments: result.results.map((row: any) => ({
+        ...row,
+        user_email: sanitizeEmail(row.user_email, row.user_id),
+      })),
       pagination: {
         page,
         perPage,

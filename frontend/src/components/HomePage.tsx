@@ -22,10 +22,8 @@ export default function HomePage() {
       setLoading(true)
       setError(null)
       const data = await getFeatures()
-      // Sort by net votes (up - down)
-      const sorted = data.sort((a, b) => 
-        (b.votesUp - b.votesDown) - (a.votesUp - a.votesDown)
-      )
+      // Sort by upvotes (ties keep backend's created_at DESC order)
+      const sorted = data.sort((a, b) => b.votesUp - a.votesUp)
       setFeatures(sorted)
     } catch (err) {
       setError(t('features.error'))

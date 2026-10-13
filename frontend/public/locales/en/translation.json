@@ -59,7 +59,7 @@
   },
   "suggestion": {
     "title": "Suggest a New Feature",
-    "description": "Share your idea for a new feature! Our admin team will review your suggestion and, if approved, add it to the voting list for the community to vote on.",
+    "description": "Share your idea for a new feature! It will appear in the voting list immediately for the community to vote on.",
     "labelTitle": "Title",
     "labelDescription": "Description",
     "placeholderTitle": "e.g., Dark mode support",
@@ -69,7 +69,7 @@
     "submitting": "Submitting...",
     "success": {
       "title": "Suggestion Submitted Successfully!",
-      "description": "Your feature suggestion has been sent to the admin team for review. You will be notified once it is approved or added to the voting list."
+      "description": "Your feature suggestion has been added to the voting list. Everyone can vote on it now."
     },
     "error": {
       "title": "Submission Failed",

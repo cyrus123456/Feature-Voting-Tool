@@ -59,7 +59,7 @@
   },
   "suggestion": {
     "title": "提交新功能建议",
-    "description": "分享你的新功能创意！管理员会审核你的建议，通过后会加入投票列表，让社区来投票。",
+    "description": "分享你的新功能创意！提交后会立即加入投票列表，让社区来投票。",
     "labelTitle": "标题",
     "labelDescription": "描述",
     "placeholderTitle": "例如：深色模式支持",
@@ -69,7 +69,7 @@
     "submitting": "提交中...",
     "success": {
       "title": "建议提交成功！",
-      "description": "你的功能建议已发送给管理员审核。审核通过或加入投票列表后会通知你。"
+      "description": "你的功能建议已加入投票列表，现在就可以被大家投票了。"
     },
     "error": {
       "title": "提交失败",

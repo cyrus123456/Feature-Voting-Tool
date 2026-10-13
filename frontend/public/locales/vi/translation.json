@@ -59,7 +59,7 @@
   },
   "suggestion": {
     "title": "Đề Xuất Tính Năng Mới",
-    "description": "Chia sẻ ý tưởng của bạn về tính năng mới! Đội ngũ quản trị sẽ xem xét đề xuất của bạn và nếu được chấp thuận, sẽ thêm vào danh sách bình chọn để cộng đồng bỏ phiếu.",
+    "description": "Chia sẻ ý tưởng của bạn về tính năng mới! Đề xuất sẽ xuất hiện ngay trong danh sách bình chọn để cộng đồng bỏ phiếu.",
     "labelTitle": "Tiêu đề",
     "labelDescription": "Mô tả",
     "placeholderTitle": "vd: Dark mode support",
@@ -69,7 +69,7 @@
     "submitting": "Đang gửi...",
     "success": {
       "title": "Đã Gửi Đề Xuất Thành Công!",
-      "description": "Đề xuất tính năng của bạn đã được gửi đến đội ngũ quản trị để xem xét. Bạn sẽ được thông báo khi đề xuất được chấp thuận hoặc thêm vào danh sách bình chọn."
+      "description": "Đề xuất tính năng của bạn đã được thêm vào danh sách bình chọn. Mọi người có thể bỏ phiếu ngay bây giờ."
     },
     "error": {
       "title": "Gửi Thất Bại",

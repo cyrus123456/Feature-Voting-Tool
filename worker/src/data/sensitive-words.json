@@ -1,0 +1,31 @@
+{
+  "_comment": "Open-source sensitive-word / abusive-language starter list. Latin (en/vi) terms are matched as whole tokens (word-boundary, no false hits like 'Scunthorpe'); zh terms + any multi-word phrase are matched as substrings (CJK is unsegmented). Seeded from permissive open lists (English: list-of-profanity/cuss; Chinese: sensitive-words/badwords; Vietnamese starter lists), then curated to reduce false positives. Lists are project data and fully editable. Vietnamese terms with diacritics are single space-separated tokens; short ambiguous abbreviations were pruned.",
+  "en": [
+    "arse", "arsehole", "ass", "asshole", "asswipe", "bastard", "bellend",
+    "bitch", "bollock", "bollocks", "boner", "bullshit", "bugger", "butthole",
+    "chode", "clunge", "coon", "crap", "crappy", "crackhead", "cretin", "cum",
+    "cumshot", "cunt", "deepthroat", "dick", "dickhead", "dipshit", "dipstick",
+    "douche", "douchebag", "dumbass", "dumbfuck", "fag", "faggot", "fapping",
+    "felatio", "fuck", "fucked", "fucker", "fuckface", "fuckhead", "fucknugget",
+    "fuckoff", "gobshite", "goddamn", "gringo", "hoe", "jackass", "jerkoff",
+    "jizz", "kike", "labia", "motherfucker", "negro", "nigga", "nigger",
+    "packie", "pecker", "pillowbiter", "prick", "porn", "prostitute", "pube",
+    "pussy", "queef", "rape", "rapist", "retard", "schmuck", "scumbag", "shit",
+    "slut", "spastic", "spick", "tranny", "twat", "vaginal", "wanker", "whore",
+    "wtf"
+  ],
+  "vi": [
+    "đụ", "đéo", "đĩ", "buồi", "lồn", "cặc", "dái", "khốn", "đểu", "cứt",
+    "mẹ kiếp", "mẹ mày", "bố mày", "đụ mẹ", "đụ má", "đụ bố", "lồn mẹ",
+    "l má", "con mẹ nó", "đồ chó", "chó đẻ", "vcl", "dmm", "cmn", "cmm",
+    "đm", "đcm", "stbx", "sml"
+  ],
+  "zh": [
+    "傻逼", "沙比", "煞笔", "傻屌", "二逼", "臭逼", "逼样", "操你妈", "草泥马",
+    "他妈的", "尼玛", "妈卖批", "狗日", "日你", "干你娘", "去死", "死全家",
+    "不得好死", "滚蛋", "废物", "白痴", "脑残", "蠢货", "贱人", "贱货", "婊子",
+    "骚货", "烂货", "破鞋", "狗屎", "狗东西", "王八蛋", "王八", "混蛋", "畜生",
+    "杂种", "人渣", "败类", "缺德", "下贱", "不要脸", "扑街", "吊毛", "叼毛",
+    "猪狗不如", "龟公"
+  ]
+}

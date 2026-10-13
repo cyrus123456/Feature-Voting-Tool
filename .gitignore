@@ -1,61 +1,63 @@
-# Dependencies
+# 依赖
 node_modules/
 .pnp
+.pnp.cjs
 .pnp.js
 
-# Testing
+# 测试
 coverage/
 
-# Production
+# 构建产物
 dist/
 build/
-backend/
 .output/
 
-# Misc
-.DS_Store
+# 环境变量（.env.example 有意跟踪，作为模板提交）
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# 日志
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
 
-# Environment
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.dev.vars
+# TypeScript 增量构建缓存
+*.tsbuildinfo
 
-# IDE
-.vscode/
-.idea/
-.omo/
+# 工具缓存
+.eslintcache
+.cache/
+.parcel-cache/
+.vite/
+
+# 忽略所有以 . 开头的文件夹
+# 覆盖 .vscode/ .idea/ .history/ .fleet/ .zed/ .mimocode .claude/ .codex/ .codebuddy/ .wrangler/ .mf/ 等全部本地工具与 AI 代理目录，无需逐个枚举
+.*/
+# .github/ 存放 CI 工作流（deploy.yml），需提交到仓库，故显式取反
+!.github/
+
+# 临时脚本目录（非点开头，需单独忽略）
+temp-scripts/
+
+# 编辑器临时文件
 *.swp
 *.swo
 *~
 
-# Wrangler
-.wrangler/
-.mf/
+# 操作系统文件
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
-# Build info
-.cache/
-.parcel-cache/
-
-
-# Local D1 database
-local-db.sqlite3
-# Local Cloudflare Workers site
-worker-site/
-# Local Cloudflare Workers KV
-worker-kv/
-# Local Cloudflare Workers D1
-worker-d1/
-# Local Cloudflare Workers Durable Objects
-worker-do/
-# Local Cloudflare Workers R2
-worker-r2/
-
-.cursor/
+# 本地 D1 数据库（含 WAL/SHM 临时文件）
+*.sqlite3
+*.sqlite3-journal
+*.sqlite3-wal
+*.sqlite3-shm

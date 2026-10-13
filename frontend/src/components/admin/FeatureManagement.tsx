@@ -112,7 +112,10 @@ export default function FeatureManagement() {
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to create feature')
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}))
+        throw new Error(err.error || 'Failed to create feature')
+      }
 
       toast({
         title: 'Success',
@@ -150,7 +153,10 @@ export default function FeatureManagement() {
         }
       )
 
-      if (!response.ok) throw new Error('Failed to update feature')
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}))
+        throw new Error(err.error || 'Failed to update feature')
+      }
 
       toast({
         title: 'Success',

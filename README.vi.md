@@ -2,7 +2,7 @@
 
 ![Feature Voting Platform](https://img.shields.io/badge/Status-Active-brightgreen)
 
-[English](README.md) | Tiếng Việt
+[English](README.md) | Tiếng Việt | [简体中文](README.zh.md)
 
 Hệ thống bình chọn tính năng đa ngôn ngữ (Tiếng Anh và Tiếng Việt) cho phép người dùng đề xuất và bình chọn cho các tính năng mới. Dự án này sử dụng Cloudflare Workers làm backend và React làm frontend.
 

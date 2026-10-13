@@ -23,7 +23,7 @@ export async function getAllFeatures(env: Env): Promise<Feature[]> {
     FROM features f
     LEFT JOIN votes v ON f.id = v.feature_id
     GROUP BY f.id
-    ORDER BY (votes_up - votes_down) DESC, f.created_at DESC
+    ORDER BY votes_up DESC, f.created_at DESC
   `).all()
 
   return results.map((row: any) => ({

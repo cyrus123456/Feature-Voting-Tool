@@ -4,6 +4,8 @@ import { verifyUserSession } from "./auth";
 import { verifyAdminAccess } from "../middleware/auth";
 import { createFeature } from "../db/queries";
 import { verifyRecaptcha } from "../utils/recaptcha";
+import { assertNoSensitiveWords } from "../utils/profanity";
+import { sanitizeEmail } from "../utils/privacy";
 import {
   sendEmail,
   generateSuggestionApprovedEmail,
@@ -52,7 +54,7 @@ function mapRowToSuggestion(row: any): Suggestion {
     approved_feature_id: row.approved_feature_id,
     created_at: row.created_at,
     updated_at: row.updated_at,
-    ...(row.user_email && { user_email: row.user_email }),
+    ...(row.user_email && { user_email: sanitizeEmail(row.user_email, row.user_id) }),
   };
 }
 
@@ -177,13 +179,21 @@ export async function handleCreateSuggestion(
     const now = Date.now();
     const desc = typeof body.description === "string" ? body.description : "";
 
+    const sensitiveError = assertNoSensitiveWords(body.title, desc);
+    if (sensitiveError) {
+      return jsonResponse({ error: sensitiveError, code: "SENSITIVE_CONTENT" }, 400);
+    }
+
+    // Auto-publish: the suggestion becomes a feature immediately (no admin review).
+    const feature = await createFeature(env, { title: body.title, description: desc });
+
     await env.DB.prepare(
       `
-      INSERT INTO feature_suggestions (id, user_id, title, description, status, created_at, updated_at)
-      VALUES (?, ?, ?, ?, 'pending', ?, ?)
+      INSERT INTO feature_suggestions (id, user_id, title, description, status, approved_feature_id, created_at, updated_at)
+      VALUES (?, ?, ?, ?, 'approved', ?, ?, ?)
     `,
     )
-      .bind(id, user!.id, body.title, desc, now, now)
+      .bind(id, user!.id, body.title, desc, feature.id, now, now)
       .run();
 
     return jsonResponse({
@@ -191,8 +201,8 @@ export async function handleCreateSuggestion(
       user_id: user!.id,
       title: body.title,
       description: desc,
-      status: "pending",
-      approved_feature_id: null,
+      status: "approved",
+      approved_feature_id: feature.id,
       created_at: now,
       updated_at: now,
     });

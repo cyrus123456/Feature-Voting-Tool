@@ -71,7 +71,8 @@ export async function createFeature(
   })
   
   if (!response.ok) {
-    throw new Error('Failed to create feature')
+    const err = await response.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to create feature')
   }
   
   return response.json()
@@ -89,7 +90,8 @@ export async function updateFeature(
   })
   
   if (!response.ok) {
-    throw new Error('Failed to update feature')
+    const err = await response.json().catch(() => ({}))
+    throw new Error(err.error || 'Failed to update feature')
   }
   
   return response.json()
