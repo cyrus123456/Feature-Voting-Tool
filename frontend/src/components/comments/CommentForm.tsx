@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
+import { handleSessionExpired } from '@/lib/session'
 import { useRecaptcha } from '@/hooks/useRecaptcha'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
@@ -63,6 +64,7 @@ export default function CommentForm({ featureId, parentId, onSuccess, onCancel }
       })
 
       if (!response.ok) {
+        if (handleSessionExpired(response)) return
         const err = await response.json().catch(() => ({}))
         throw new Error(err.error || 'Failed to post comment')
       }

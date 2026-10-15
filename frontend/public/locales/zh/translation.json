@@ -7,6 +7,9 @@
     "home": "首页",
     "admin": "管理"
   },
+  "auth": {
+    "sessionExpired": "登录已过期，请重新登录。"
+  },
   "features": {
     "title": "功能",
     "noFeatures": "暂无功能，敬请期待！",

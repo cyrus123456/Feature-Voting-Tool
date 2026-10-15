@@ -7,6 +7,9 @@
     "home": "Trang chủ",
     "admin": "Quản trị"
   },
+  "auth": {
+    "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+  },
   "features": {
     "title": "Tính năng",
     "noFeatures": "Chưa có tính năng nào. Hãy quay lại sau!",

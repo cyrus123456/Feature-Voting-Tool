@@ -7,6 +7,9 @@
     "home": "Home",
     "admin": "Admin"
   },
+  "auth": {
+    "sessionExpired": "Your session has expired. Please log in again."
+  },
   "features": {
     "title": "Features",
     "noFeatures": "No features yet. Check back soon!",

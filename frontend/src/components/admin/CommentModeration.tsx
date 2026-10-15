@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
+import { handleSessionExpired } from '@/lib/session'
 import {
   Table,
   TableBody,
@@ -90,7 +91,10 @@ export default function CommentModeration() {
         },
       })
 
-      if (!response.ok) throw new Error('Failed to fetch comments')
+      if (!response.ok) {
+        if (handleSessionExpired(response)) return
+        throw new Error('Failed to fetch comments')
+      }
 
       const data = await response.json()
       setComments(data.comments || [])
@@ -117,7 +121,10 @@ export default function CommentModeration() {
         }
       )
 
-      if (!response.ok) throw new Error(`Failed to ${hide ? 'hide' : 'show'} comment`)
+      if (!response.ok) {
+        if (handleSessionExpired(response)) return
+        throw new Error(`Failed to ${hide ? 'hide' : 'show'} comment`)
+      }
 
       toast({
         title: 'Success',
@@ -148,7 +155,10 @@ export default function CommentModeration() {
         }
       )
 
-      if (!response.ok) throw new Error('Failed to delete comment')
+      if (!response.ok) {
+        if (handleSessionExpired(response)) return
+        throw new Error('Failed to delete comment')
+      }
 
       toast({
         title: 'Success',
@@ -180,7 +190,10 @@ export default function CommentModeration() {
         }
       )
 
-      if (!response.ok) throw new Error('Failed to ban user')
+      if (!response.ok) {
+        if (handleSessionExpired(response)) return
+        throw new Error('Failed to ban user')
+      }
 
       toast({
         title: 'Success',

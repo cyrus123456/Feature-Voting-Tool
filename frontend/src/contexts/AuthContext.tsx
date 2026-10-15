@@ -5,6 +5,9 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
+import { useToast } from "@/components/ui/use-toast";
+import { onSessionExpired } from "@/lib/session";
 
 interface User {
   id: string;
@@ -32,6 +35,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+  const { t } = useTranslation();
+
+  // A token-bearing request returned 401 -> clear the dead token and tell the user
+  useEffect(() => {
+    return onSessionExpired(() => {
+      localStorage.removeItem("auth_token");
+      setToken(null);
+      setUser(null);
+      toast({
+        title: `🔒 ${t("auth.sessionExpired")}`,
+        variant: "destructive",
+        duration: 5000,
+      });
+    });
+  }, [toast, t]);
 
   // Load token from localStorage on mount
   useEffect(() => {

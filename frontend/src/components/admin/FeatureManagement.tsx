@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
+import { handleSessionExpired } from '@/lib/session'
 import {
   Table,
   TableBody,
@@ -113,6 +114,7 @@ export default function FeatureManagement() {
       })
 
       if (!response.ok) {
+        if (handleSessionExpired(response)) return
         const err = await response.json().catch(() => ({}))
         throw new Error(err.error || 'Failed to create feature')
       }
@@ -154,6 +156,7 @@ export default function FeatureManagement() {
       )
 
       if (!response.ok) {
+        if (handleSessionExpired(response)) return
         const err = await response.json().catch(() => ({}))
         throw new Error(err.error || 'Failed to update feature')
       }
@@ -189,7 +192,10 @@ export default function FeatureManagement() {
         }
       )
 
-      if (!response.ok) throw new Error('Failed to delete feature')
+      if (!response.ok) {
+        if (handleSessionExpired(response)) return
+        throw new Error('Failed to delete feature')
+      }
 
       toast({
         title: 'Success',

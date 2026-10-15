@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import CommentForm from './CommentForm'
 import { useToast } from '@/components/ui/use-toast'
+import { handleSessionExpired } from '@/lib/session'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
 
@@ -53,7 +54,10 @@ export default function CommentItem({ comment, featureId, onDeleted, onReplyAdde
         },
       })
 
-      if (!response.ok) throw new Error('Failed to delete comment')
+      if (!response.ok) {
+        if (handleSessionExpired(response)) return
+        throw new Error('Failed to delete comment')
+      }
 
       onDeleted()
     } catch (error: any) {

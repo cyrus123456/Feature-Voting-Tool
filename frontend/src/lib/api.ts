@@ -1,4 +1,6 @@
 // API configuration
+import { handleSessionExpired } from './session'
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.idea.nginxwaf.me'
 
 export interface Feature {
@@ -71,10 +73,11 @@ export async function createFeature(
   })
   
   if (!response.ok) {
+    if (handleSessionExpired(response)) throw new Error('Session expired, please log in again')
     const err = await response.json().catch(() => ({}))
     throw new Error(err.error || 'Failed to create feature')
   }
-  
+
   return response.json()
 }
 
@@ -90,6 +93,7 @@ export async function updateFeature(
   })
   
   if (!response.ok) {
+    if (handleSessionExpired(response)) throw new Error('Session expired, please log in again')
     const err = await response.json().catch(() => ({}))
     throw new Error(err.error || 'Failed to update feature')
   }
@@ -104,6 +108,7 @@ export async function deleteFeature(token: string, featureId: string): Promise<v
   })
   
   if (!response.ok) {
+    if (handleSessionExpired(response)) throw new Error('Session expired, please log in again')
     throw new Error('Failed to delete feature')
   }
 }
@@ -114,6 +119,7 @@ export async function getStats(token: string): Promise<Stats> {
   })
   
   if (!response.ok) {
+    if (handleSessionExpired(response)) throw new Error('Session expired, please log in again')
     throw new Error('Failed to fetch stats')
   }
   

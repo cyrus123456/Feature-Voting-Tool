@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
+import { handleSessionExpired } from '@/lib/session'
 import { useRecaptcha } from '@/hooks/useRecaptcha'
 import { Loader2 } from 'lucide-react'
 
@@ -78,6 +79,7 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
       })
 
       if (!response.ok) {
+        if (handleSessionExpired(response)) return
         const err = await response.json().catch(() => ({}))
         throw new Error(err.error || 'Failed to submit suggestion')
       }

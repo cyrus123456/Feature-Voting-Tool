@@ -455,7 +455,7 @@ async function createSession(env: Env, userId: string): Promise<Session> {
   const id = crypto.randomUUID()
   const token = crypto.randomUUID() + crypto.randomUUID() // Long token
   const now = Date.now()
-  const expiresAt = now + (15 * 60 * 1000) // 15 minutes
+  const expiresAt = now + (7 * 24 * 60 * 60 * 1000) // 7 days
 
   await env.DB.prepare(`
     INSERT INTO user_sessions (id, user_id, token, expires_at, created_at)
