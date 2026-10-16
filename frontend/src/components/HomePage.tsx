@@ -79,7 +79,7 @@ export default function HomePage() {
           
           {/* Suggest Feature Button */}
           <div className="mt-6">
-            <SuggestFeatureButton />
+            <SuggestFeatureButton onSubmitted={loadFeatures} />
           </div>
           
           {/* Stats Bar */}

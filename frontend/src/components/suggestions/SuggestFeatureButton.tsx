@@ -4,16 +4,20 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import SuggestionForm from './SuggestionForm'
 
-export default function SuggestFeatureButton() {
+interface SuggestFeatureButtonProps {
+  onSubmitted?: () => void
+}
+
+export default function SuggestFeatureButton({ onSubmitted }: SuggestFeatureButtonProps) {
   const { user } = useAuth()
   const [showForm, setShowForm] = useState(false)
 
   if (!user) return null
 
   const handleSuccess = () => {
-    // Just close the form - no page reload
-    // User will see the success toast notification
     setShowForm(false)
+    // Refresh the feature list so the newly published suggestion shows up immediately
+    onSubmitted?.()
   }
 
   return (
