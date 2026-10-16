@@ -12,7 +12,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
-import { useRecaptcha } from '@/hooks/useRecaptcha'
 
 interface LoginModalProps {
   open: boolean
@@ -22,7 +21,6 @@ interface LoginModalProps {
 export default function LoginModal({ open, onClose }: LoginModalProps) {
   const { login } = useAuth()
   const { toast } = useToast()
-  const { executeRecaptcha } = useRecaptcha()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -41,10 +39,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
     try {
       setLoading(true)
       
-      // Get reCAPTCHA token
-      const recaptchaToken = await executeRecaptcha('login')
-      
-      await login(email, recaptchaToken)
+      await login(email)
       
       toast({
         title: '📧 Check your email!',

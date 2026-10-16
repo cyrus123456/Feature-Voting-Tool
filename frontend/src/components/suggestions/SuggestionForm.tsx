@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/dialog'
 import { useToast } from '@/components/ui/use-toast'
 import { handleSessionExpired } from '@/lib/session'
-import { useRecaptcha } from '@/hooks/useRecaptcha'
 import { Loader2 } from 'lucide-react'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
@@ -29,7 +28,6 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
   const { t } = useTranslation()
   const { token } = useAuth()
   const { toast } = useToast()
-  const { executeRecaptcha } = useRecaptcha()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
@@ -62,9 +60,6 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
     try {
       setLoading(true)
 
-      // Get reCAPTCHA token
-      const recaptchaToken = await executeRecaptcha('suggest_feature')
-
       const response = await fetch(`${API_BASE_URL}/api/suggestions`, {
         method: 'POST',
         headers: {
@@ -74,7 +69,6 @@ export default function SuggestionForm({ open, onClose, onSuccess }: SuggestionF
         body: JSON.stringify({
           title: formData.title,
           description: formData.description,
-          recaptchaToken,
         }),
       })
 

@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/use-toast'
-import { useRecaptcha } from '@/hooks/useRecaptcha'
 
 interface FeatureCardProps {
   feature: Feature
@@ -20,7 +19,6 @@ export default function FeatureCard({ feature, rank, onVoteSuccess }: FeatureCar
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { toast } = useToast()
-  const { executeRecaptcha } = useRecaptcha()
   const [voting, setVoting] = useState(false)
   const [localVotes, setLocalVotes] = useState({
     up: feature.votesUp,
@@ -32,11 +30,8 @@ export default function FeatureCard({ feature, rank, onVoteSuccess }: FeatureCar
 
     try {
       setVoting(true)
-      
-      // Get reCAPTCHA token
-      const recaptchaToken = await executeRecaptcha('vote')
-      
-      const result = await voteOnFeature(feature.id, { voteType, recaptchaToken })
+
+      const result = await voteOnFeature(feature.id, { voteType })
       setLocalVotes({ up: result.votesUp, down: result.votesDown })
       
       toast({

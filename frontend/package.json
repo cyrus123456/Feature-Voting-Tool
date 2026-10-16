@@ -6,7 +6,12 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name=feature-voting-frontend",
+    "pages:secret:put": "wrangler pages secret put --project-name=feature-voting-frontend",
+    "pages:secret:list": "wrangler pages secret list --project-name=feature-voting-frontend",
+    "pages:secret:delete": "wrangler pages secret delete --project-name=feature-voting-frontend",
+    "pages:deployments": "wrangler pages deployment list --project-name=feature-voting-frontend"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
@@ -42,6 +47,7 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "wrangler": "^3.22.1"
   }
 }

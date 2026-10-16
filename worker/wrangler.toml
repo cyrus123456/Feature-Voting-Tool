@@ -16,7 +16,6 @@ id = "151fc80fdb8f4286bc5f62c5614ca5e9"
 # Environment variables (non-sensitive)
 [vars]
 APP_URL = "https://idea.nginxwaf.me"
-RECAPTCHA_SITE_KEY = ""
 
 # Secrets (NEVER commit these - set via wrangler secret put or GitHub Secrets)
 # ADMIN_TOKEN - Admin authentication token

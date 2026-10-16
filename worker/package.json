@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "bash ./update-wrangler-config.sh && wrangler deploy",
-    "tail": "wrangler tail"
+    "tail": "wrangler tail",
+    "secret:put": "wrangler secret put",
+    "secret:list": "wrangler secret list",
+    "secret:delete": "wrangler secret delete",
+    "d1:execute": "wrangler d1 execute feature-voting-db"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231218.0",

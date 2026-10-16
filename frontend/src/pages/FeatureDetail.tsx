@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import CommentSection from '@/components/comments/CommentSection'
 import { useToast } from '@/components/ui/use-toast'
-import { useRecaptcha } from '@/hooks/useRecaptcha'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
 
@@ -23,7 +22,6 @@ export default function FeatureDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { toast } = useToast()
-  const { executeRecaptcha } = useRecaptcha()
   const [feature, setFeature] = useState<Feature | null>(null)
   const [loading, setLoading] = useState(true)
   const [voting, setVoting] = useState(false)
@@ -70,15 +68,12 @@ export default function FeatureDetail() {
     try {
       setVoting(true)
 
-      // Get reCAPTCHA token
-      const recaptchaToken = await executeRecaptcha('vote_feature')
-
       const response = await fetch(`${API_BASE_URL}/api/features/${feature.id}/vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ voteType, recaptchaToken }),
+        body: JSON.stringify({ voteType }),
       })
 
       if (!response.ok) {

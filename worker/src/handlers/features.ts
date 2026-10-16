@@ -4,7 +4,6 @@ import { corsHeaders } from '../utils/cors'
 import { checkRateLimit } from '../middleware/rateLimit'
 import { generateFingerprint } from '../utils/fingerprint'
 import { sendTelegramNotification } from '../utils/telegram'
-import { verifyRecaptcha } from '../utils/recaptcha'
 
 export async function handleFeatures(request: Request, env: Env): Promise<Response> {
   const features = await getAllFeatures(env)
@@ -35,15 +34,6 @@ export async function handleVote(
 
     if (!voteType || !['up', 'down'].includes(voteType)) {
       return new Response(JSON.stringify({ error: 'Invalid vote type' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
-    // Verify reCAPTCHA
-    const recaptchaResult = await verifyRecaptcha(body.recaptchaToken, env, 'vote')
-    if (!recaptchaResult.success) {
-      return new Response(JSON.stringify({ error: recaptchaResult.error || 'Security verification failed' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })

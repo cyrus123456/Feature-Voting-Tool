@@ -20,7 +20,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (email: string, recaptchaToken?: string) => Promise<void>;
+  login: (email: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   isAdmin: boolean;
@@ -90,13 +90,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function login(email: string, recaptchaToken?: string) {
+  async function login(email: string) {
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, recaptchaToken }),
+      body: JSON.stringify({ email }),
     });
 
     if (!response.ok) {
