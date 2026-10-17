@@ -1,6 +1,7 @@
 import { Env } from '../index'
 import { corsHeaders } from '../utils/cors'
 import { verifyUserSession } from './auth'
+import { verifyRecaptcha } from '../utils/recaptcha'
 import { assertNoSensitiveWords } from '../utils/profanity'
 import { isAdminToken } from '../middleware/auth'
 import { sanitizeEmail } from '../utils/privacy'
@@ -67,6 +68,21 @@ function validateContent(content: string, maxLength = 2000): Response | null {
   }
   if (content.length > maxLength) {
     return jsonResponse({ error: `Content too long (max ${maxLength} characters)` }, 400)
+  }
+  return null
+}
+
+async function verifyRecaptchaToken(
+  token: string,
+  env: Env,
+  action: string
+): Promise<Response | null> {
+  const result = await verifyRecaptcha(token, env, action)
+  if (!result.success) {
+    return jsonResponse(
+      { error: result.error || 'Security verification failed' },
+      400
+    )
   }
   return null
 }
@@ -191,6 +207,9 @@ export async function handleCreateComment(request: Request, env: Env): Promise<R
     if (idError) return idError
 
     const body: any = await request.json()
+
+    const recaptchaError = await verifyRecaptchaToken(body.recaptchaToken, env, 'create_comment')
+    if (recaptchaError) return recaptchaError
 
     const contentError = validateContent(body.content)
     if (contentError) return contentError

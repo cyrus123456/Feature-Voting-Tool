@@ -2,6 +2,7 @@ import { Env } from '../index'
 import { corsHeaders } from '../utils/cors'
 import { sanitizeEmail } from '../utils/privacy'
 import { sendEmail, generateMagicLinkEmail } from '../utils/email'
+import { verifyRecaptcha } from '../utils/recaptcha'
 import { isAdminEmail, UserRole } from '../middleware/auth'
 
 interface User {
@@ -32,9 +33,19 @@ export async function handleLoginRequest(request: Request, env: Env): Promise<Re
   try {
     const body: any = await request.json()
     const email = body.email?.trim().toLowerCase()
+    const recaptchaToken = body.recaptchaToken
 
     if (!email || !isValidEmail(email)) {
       return new Response(JSON.stringify({ error: 'Valid email required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Verify reCAPTCHA
+    const recaptchaResult = await verifyRecaptcha(recaptchaToken, env, 'login')
+    if (!recaptchaResult.success) {
+      return new Response(JSON.stringify({ error: recaptchaResult.error || 'Security verification failed' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })

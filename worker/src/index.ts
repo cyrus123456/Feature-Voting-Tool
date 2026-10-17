@@ -49,6 +49,7 @@ export interface Env {
   TURNSTILE_SECRET_KEY?: string;
   RESEND_API_KEY?: string;
   SENDGRID_API_KEY?: string;
+  RECAPTCHA_SECRET_KEY: string;
   APP_URL: string; // e.g., https://idea.nginxwaf.me
   SSO_SECRET?: string; // HMAC secret for SSO auto-login links (fail-closed if unset)
 }

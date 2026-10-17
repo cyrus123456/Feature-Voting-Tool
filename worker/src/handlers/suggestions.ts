@@ -3,6 +3,7 @@ import { corsHeaders } from "../utils/cors";
 import { verifyUserSession } from "./auth";
 import { verifyAdminAccess } from "../middleware/auth";
 import { createFeature } from "../db/queries";
+import { verifyRecaptcha } from "../utils/recaptcha";
 import { assertNoSensitiveWords } from "../utils/profanity";
 import { sanitizeEmail } from "../utils/privacy";
 import {
@@ -55,6 +56,21 @@ function mapRowToSuggestion(row: any): Suggestion {
     updated_at: row.updated_at,
     ...(row.user_email && { user_email: sanitizeEmail(row.user_email, row.user_id) }),
   };
+}
+
+async function verifyRecaptchaToken(
+  token: string,
+  env: Env,
+  action: string,
+): Promise<Response | null> {
+  const result = await verifyRecaptcha(token, env, action);
+  if (!result.success) {
+    return jsonResponse(
+      { error: result.error || "Security verification failed" },
+      400,
+    );
+  }
+  return null;
 }
 
 function handleError(operation: string, error: any): Response {
@@ -148,6 +164,13 @@ export async function handleCreateSuggestion(
     if (error) return error;
 
     const body: any = await request.json();
+
+    const recaptchaError = await verifyRecaptchaToken(
+      body.recaptchaToken,
+      env,
+      "suggest_feature",
+    );
+    if (recaptchaError) return recaptchaError;
 
     const titleError = validateTitle(body.title);
     if (titleError) return titleError;

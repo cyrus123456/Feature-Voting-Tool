@@ -11,6 +11,7 @@
     "pages:secret:put": "wrangler pages secret put --project-name=feature-voting-frontend",
     "pages:secret:list": "wrangler pages secret list --project-name=feature-voting-frontend",
     "pages:secret:delete": "wrangler pages secret delete --project-name=feature-voting-frontend",
+    "sync:env": "wrangler pages secret bulk .env.local --project-name=feature-voting-frontend",
     "pages:deployments": "wrangler pages deployment list --project-name=feature-voting-frontend"
   },
   "dependencies": {

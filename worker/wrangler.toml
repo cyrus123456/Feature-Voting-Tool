@@ -2,16 +2,17 @@ name = "feature-voting-worker"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
-# D1 Database binding - ID will be set from environment
+# D1 Database binding - ID substituted at deploy time by update-wrangler-config.sh
+# from the CF_D1_DATABASE_ID build variable (Cloudflare dashboard → Workers Builds settings)
 [[d1_databases]]
 binding = "DB"
 database_name = "feature-voting-db"
-database_id = "a884397e-6ea5-431f-b201-aeac81a3d738"
+database_id = "${CF_D1_DATABASE_ID}"
 
-# KV namespace for rate limiting - ID will be set from environment
+# KV namespace for rate limiting - ID substituted from the CF_KV_NAMESPACE_ID build variable
 [[kv_namespaces]]
 binding = "RATE_LIMIT_KV"
-id = "151fc80fdb8f4286bc5f62c5614ca5e9"
+id = "${CF_KV_NAMESPACE_ID}"
 
 # Environment variables (non-sensitive)
 [vars]
@@ -26,7 +27,7 @@ APP_URL = "https://idea.nginxwaf.me"
 # SSO_SECRET - HMAC secret for SSO auto-login links (/auth/sso)
 
 [build]
-command = "npm install && npx tsc"
+command = "bash ./update-wrangler-config.sh && npm install && npx tsc"
 
 # Routes - apply to all environments
 routes = [

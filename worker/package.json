@@ -9,6 +9,7 @@
     "secret:put": "wrangler secret put",
     "secret:list": "wrangler secret list",
     "secret:delete": "wrangler secret delete",
+    "sync:env": "wrangler secret bulk .dev.vars",
     "d1:execute": "wrangler d1 execute feature-voting-db"
   },
   "devDependencies": {

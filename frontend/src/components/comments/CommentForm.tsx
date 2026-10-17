@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { handleSessionExpired } from '@/lib/session'
+import { useRecaptcha } from '@/hooks/useRecaptcha'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787'
 
@@ -18,6 +19,7 @@ interface CommentFormProps {
 export default function CommentForm({ featureId, parentId, onSuccess, onCancel }: CommentFormProps) {
   const { token } = useAuth()
   const { toast } = useToast()
+  const { executeRecaptcha } = useRecaptcha()
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -45,6 +47,9 @@ export default function CommentForm({ featureId, parentId, onSuccess, onCancel }
     try {
       setLoading(true)
 
+      // Get reCAPTCHA token
+      const recaptchaToken = await executeRecaptcha('create_comment')
+
       const response = await fetch(`${API_BASE_URL}/api/features/${featureId}/comments`, {
         method: 'POST',
         headers: {
@@ -54,6 +59,7 @@ export default function CommentForm({ featureId, parentId, onSuccess, onCancel }
         body: JSON.stringify({
           content: content.trim(),
           parent_id: parentId || null,
+          recaptchaToken,
         }),
       })
 

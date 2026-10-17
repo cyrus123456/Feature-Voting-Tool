@@ -9,6 +9,7 @@ import {
 import { corsHeaders } from "../utils/cors";
 import { verifyAdminAccess } from "../middleware/auth";
 import { sendTelegramNotification } from "../utils/telegram";
+import { verifyRecaptcha } from "../utils/recaptcha";
 import { assertNoSensitiveWords } from "../utils/profanity";
 
 // Helper functions to reduce duplication
@@ -22,6 +23,21 @@ function jsonResponse(data: any, status = 200): Response {
 function extractFeatureId(request: Request): string | null {
   const url = new URL(request.url);
   return url.pathname.split("/").pop() || null;
+}
+
+async function verifyRecaptchaToken(
+  token: string,
+  env: Env,
+  action: string,
+): Promise<Response | null> {
+  const result = await verifyRecaptcha(token, env, action);
+  if (!result.success) {
+    return jsonResponse(
+      { error: result.error || "Security verification failed" },
+      400,
+    );
+  }
+  return null;
 }
 
 async function verifyAdmin(
@@ -46,6 +62,13 @@ export async function handleAdminFeatures(
   try {
     if (action === "create") {
       const body: any = await request.json();
+
+      const recaptchaError = await verifyRecaptchaToken(
+        body.recaptchaToken,
+        env,
+        "admin_create_feature",
+      );
+      if (recaptchaError) return recaptchaError;
 
       if (typeof body.title !== "string" || !body.title.trim()) {
         return jsonResponse({ error: "Title required" }, 400);
@@ -79,6 +102,13 @@ export async function handleAdminFeatures(
       }
 
       const body: any = await request.json();
+
+      const recaptchaError = await verifyRecaptchaToken(
+        body.recaptchaToken,
+        env,
+        "admin_update_feature",
+      );
+      if (recaptchaError) return recaptchaError;
 
       const sensitiveError = assertNoSensitiveWords(body.title, body.description);
       if (sensitiveError) {
